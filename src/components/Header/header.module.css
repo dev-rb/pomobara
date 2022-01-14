@@ -13,6 +13,10 @@
     border: 2px solid #2881D9;
 }
 
+.navigation{
+    width: 40%;
+}
+
 .notificationSettings{
     display: flex;
     flex-direction: row;
@@ -21,4 +25,16 @@
 
 .notificationSettings svg{
     stroke-width: 1.5;
+}
+
+@media screen and (min-width: 1200px){
+    .container{
+        background: #1D2021;
+        padding: 1rem 2rem;
+        grid-column: 1/-1;
+    }
+
+    .navigation{
+        display: block;
+    }
 }

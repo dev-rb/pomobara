@@ -25,6 +25,12 @@
     transition: stroke-dashoffset 1.5s ease;
 }
 
+@media screen and (min-width: 1200px){
+    .levelContainer{
+        grid-column: 1;
+    }
+}
+
 /* 
 @keyframes circle {
     0%{

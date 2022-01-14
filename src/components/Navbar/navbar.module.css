@@ -24,3 +24,19 @@
     border-radius: 50%;
     border: none;
 }
+
+@media screen and (min-width: 1200px) {
+    .navContainer{
+        position: relative;
+    }
+
+    .navNewTaskButton{
+        display: none;
+    }
+
+    .navContainer button svg{
+        width: 35px;
+        height: 35px;
+        stroke-width: 1;
+    }
+}

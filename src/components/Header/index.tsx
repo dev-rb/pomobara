@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { FiBell, FiSettings } from 'react-icons/fi';
+import Navbar from '../Navbar';
 import styles from './header.module.css';
 
 const Header = () => {
@@ -10,7 +11,7 @@ const Header = () => {
             </div>
 
             <div className={styles.navigation}>
-
+                <Navbar />
             </div>
 
             <div className={styles.notificationSettings}>

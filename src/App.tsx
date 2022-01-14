@@ -1,3 +1,4 @@
+import { MdAdd } from 'react-icons/md';
 import './App.css';
 import Header from './components/Header';
 import Level from './components/Level';
@@ -9,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="Tasks">
         <Level />
         <div className="TaskGroups">
@@ -17,6 +18,7 @@ function App() {
           <TaskGroup />
           <TaskGroup />
         </div>
+        <button className='NewTaskButton'> <MdAdd size={35} color="white" /> Add Task </button>
       </div>
     </div>
   )
