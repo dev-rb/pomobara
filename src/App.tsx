@@ -1,9 +1,6 @@
-import { MdAdd } from 'react-icons/md';
+import { Outlet } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
-import Level from './components/Level';
-import Navbar from './components/Navbar';
-import TaskGroup from './components/TaskGroup';
 import ReloadPrompt from './ReloadPrompt'
 
 function App() {
@@ -12,16 +9,9 @@ function App() {
     <div className="App">
       <Header />
       <ReloadPrompt />
+      <Outlet />
       {/* <Navbar /> */}
-      <div className="Tasks">
-        <Level />
-        <div className="TaskGroups">
-          <TaskGroup />
-          <TaskGroup />
-          <TaskGroup />
-        </div>
-        <button className='NewTaskButton'> <MdAdd size={35} color="white" /> Add Task </button>
-      </div>
+
     </div>
   )
 }

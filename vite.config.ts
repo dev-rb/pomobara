@@ -5,7 +5,7 @@ import replace from '@rollup/plugin-replace'
 
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: 'development',
-  base: '/',
+  base: 'src',
   includeAssets: ['favicon.svg'],
   manifest: {
     name: 'Pomobara',
@@ -32,7 +32,6 @@ const pwaOptions: Partial<VitePWAOptions> = {
   },
   devOptions: {
     enabled: true,
-    type: 'module'
   }
 }
 
@@ -65,4 +64,9 @@ if (reload) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), VitePWA(pwaOptions), replace({ replaceOptions, preventAssignment: true })],
+  optimizeDeps: {
+    entries: ['./src/app.tsx']
+  }
 })
+
+// 
