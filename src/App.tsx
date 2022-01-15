@@ -4,12 +4,14 @@ import Header from './components/Header';
 import Level from './components/Level';
 import Navbar from './components/Navbar';
 import TaskGroup from './components/TaskGroup';
+import ReloadPrompt from './ReloadPrompt'
 
 function App() {
 
   return (
     <div className="App">
       <Header />
+      <ReloadPrompt />
       {/* <Navbar /> */}
       <div className="Tasks">
         <Level />
