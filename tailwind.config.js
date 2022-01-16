@@ -4,7 +4,15 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'level-glow-color': 'rgb(199, 5, 5)'
+      },
+
+      backgroundImage: {
+        'level-bara': "url('/capybara-pomo.png')"
+      }
+    },
   },
   plugins: [],
 }

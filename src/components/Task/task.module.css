@@ -30,9 +30,6 @@
 }
 
 .status{
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
     background: var(--statusColor);
     box-shadow: 0 0 8px var(--statusColor);
 }

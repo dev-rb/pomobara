@@ -36,7 +36,7 @@ const Level = () => {
 
 
     return (
-        <div className={styles.levelContainer}>
+        <div className='relative max-w-xs w-full h-fit lg:col-start-1  before:w-2/5 before:h-2/5 before:absolute before:left-[30%] before:top-[2%] before:-z-[1] before:bg-level-bara before:bg-cover'>
             <svg viewBox='0 0 200 200' xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <filter id='glow'>
@@ -54,7 +54,7 @@ const Level = () => {
                     <tspan alignmentBaseline='central' fontSize={'3rem'} fontWeight={'600'} fontFamily='Open Sans' dy='-.14em'>{currentLvl}</tspan>
                 </text>
 
-                <circle className={styles.circle} cx="100" cy="100" r="65" transform='rotate(-90 100 100)' fill='transparent' strokeWidth={2} strokeDashoffset={currentXp} strokeDasharray={408.4070449667} />
+                <circle className='relative stroke-level-glow-color' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={currentXp} strokeDasharray={408.4070449667} />
             </svg>
         </div>
     );

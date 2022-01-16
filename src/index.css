@@ -22,3 +22,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@layer components{
+  .levelContainer-before{
+    @apply content-none w-2/5 h-2/5 absolute left-[30%] top-[5%] -z-[1] bg-level-bara bg-cover
+  }
+}
