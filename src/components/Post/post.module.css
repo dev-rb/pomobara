@@ -1,27 +1,11 @@
-.postContainer{
-
+.clap{
+    background: #D92828;
+    box-shadow: 0 0 10px #D92828;
+    fill: white;
 }
 
-.postInfo{
-
-}
-
-.postUser{
-
-}
-
-.postProfile{
-
-}
-
-.postUserAndDate{
-
-}
-
-.postText{
-
-}
-
-.postClapButton{
-    
+.not_clapped{
+    background: #373737;
+    box-shadow: none;
+    fill: #808080; 
 }

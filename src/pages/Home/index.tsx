@@ -13,7 +13,9 @@ const Home = () => {
                 <TaskGroup />
                 <TaskGroup />
             </div>
-            <button className='w-3/5 h-12 bg-blue-600 justify-center items-center gap-4 text-xl text-white outline-none border-none hidden lg:flex'> <MdAdd size={35} color="white" /> Add Task </button>
+            <button className='w-3/5 h-12 bg-blue-600 justify-center items-center gap-4 text-xl text-white outline-none border-none hidden lg:flex'>
+                <MdAdd size={35} color="white" /> Add Task
+            </button>
         </div>
     );
 }
