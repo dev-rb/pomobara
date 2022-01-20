@@ -50,8 +50,8 @@ const Level = () => {
                 </defs>
                 <circle cx="100" cy="100" r="65" fill='#151718' stroke="#242627" strokeWidth={4} />
                 <text x="45%" y="50%" textAnchor='middle' fill='#777777'>
-                    <tspan alignmentBaseline='text-before-edge' fontSize={'0.7rem'} fontWeight={'400'} fontFamily='Open Sans'>lvl. </tspan>
-                    <tspan alignmentBaseline='central' fontSize={'3rem'} fontWeight={'600'} fontFamily='Open Sans' dy='-.14em'>{currentLvl}</tspan>
+                    <tspan dominantBaseline='text-before-edge' fontSize={'0.7rem'} fontWeight={'400'} fontFamily='Open Sans'>lvl. </tspan>
+                    <tspan dominantBaseline='central' fontSize={'3rem'} fontWeight={'600'} fontFamily='Open Sans' dy='-.14em'>{currentLvl}</tspan>
                 </text>
 
                 <circle className='relative stroke-level-glow-color' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={currentXp} strokeDasharray={408.4070449667} />
