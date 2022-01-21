@@ -15,11 +15,8 @@ const Home = () => {
 
     return (
         <div className='w-full h-full grid grid-cols-1 grid-rows-[20rem 1fr] justify-items-center pb-32 lg:grid-cols-3 lg:col-span-1 lg:row-span-1 lg:pt-16 lg:pb-0'>
-            <ReactModal isOpen={viewTaskModal!} shouldCloseOnOverlayClick onRequestClose={() => setViewTaskModal!(false)} shouldCloseOnEsc
-                style={{
-                    overlay: { background: '#00000040', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100vw' },
-                    content: { background: 'transparent', border: 'none', width: 'fit-content', height: 'fit-content', display: 'flex', justifyContent: 'center', alignItems: 'center', inset: 0, padding: 0, position: 'relative' }
-                }} contentElement={(props, children) => <div {...props}>{children} </div>}>
+            <ReactModal isOpen={viewTaskModal!} preventScroll shouldCloseOnOverlayClick onRequestClose={() => setViewTaskModal!(false)} shouldCloseOnEsc
+                contentElement={(props, children) => <div {...props}>{children} </div>}>
                 <TaskModal />
             </ReactModal>
             <Level />

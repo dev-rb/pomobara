@@ -6,6 +6,7 @@ import { registerSW } from 'virtual:pwa-register'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Friends from './pages/Friends'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const updateSW = registerSW({
   onNeedRefresh() { },
