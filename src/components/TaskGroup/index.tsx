@@ -3,7 +3,6 @@ import * as React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { IRootState } from '../../redux/store';
 import Task, { ITask, TaskStatus } from '../Task';
-import styles from './taskgroup.module.css';
 
 interface TaskGroupProps {
     groupTitle: string,

@@ -14,7 +14,7 @@
     z-index: 1 !important; 
     display: flex; 
     align-items: center; 
-    justify-content: center; 
+    justify-content: center;
 }
 
 .ReactModal__Content{
@@ -28,6 +28,7 @@
     inset: 0 !important;
     padding: 0 !important;
     position: relative !important; 
+    overflow: hidden !important; 
 }
 
 @media screen and (max-width: 500px){

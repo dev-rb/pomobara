@@ -57,7 +57,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     }
 
     return (
-        <div className='max-w-md w-screen bg-[#1C1E1F] max-h-[42rem] h-screen flex flex-col px-4 py-4 pt-8 z-10 lg:px-8 lg:max-w-2xl'>
+        <div className='max-w-md w-screen bg-[#1C1E1F] max-h-[42rem] h-screen flex flex-col px-4 py-4 pt-8 z-10 animate-modalSlideIn lg:px-8 lg:max-w-2xl'>
             <div className='w-full flex items-center justify-center'>
                 <h1 className='text-white text-2xl font-semibold'> Create a task </h1>
             </div>
@@ -72,7 +72,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
                     <div className='flex flex-row justify-between w-full mt-2'>
                         <ReactDatePicker id={"test"} wrapperClassName='!w-full flex-1 max-w-[45%]' customInput={<CustomDateInput />} value={taskDate} onChange={(date) => setTaskDate(date ? date.toLocaleDateString() : "")} />
                         <div className='w-8 lg:w-16' />
-                        <ReactDatePicker id={"test"} wrapperClassName='!w-full flex-1 max-w-[45%]' showTimeSelect showTimeSelectOnly dateFormat="h:mm aa" customInput={<CustomTimeInput />} timeIntervals={15} value={taskTime} onChange={(time) => setTaskTime(time ? time.toLocaleTimeString() : "")} />
+                        <ReactDatePicker id={"test"} wrapperClassName='!w-full flex-1 max-w-[45%]' showTimeSelect showTimeSelectOnly dateFormat="h:mm aa" customInput={<CustomTimeInput />} timeIntervals={15} value={taskTime} onChange={(time) => setTaskTime(time ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "")} />
                     </div>
                 </div>
 

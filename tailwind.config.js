@@ -11,6 +11,21 @@ module.exports = {
 
       backgroundImage: {
         'level-bara': "url('/capybara-pomo.png')"
+      },
+
+      keyframes: {
+        modalSlideIn: {
+          '0%': {
+            transform: 'translateY(100vh)'
+          },
+          '100%': {
+            transform: 'translateY(0px)'
+          }
+        }
+      },
+
+      animation: {
+        modalSlideIn: 'modalSlideIn 0.5s ease'
       }
     },
   },

@@ -1,7 +1,4 @@
-import * as React from 'react';
 import Post from '../../components/Post';
-import TaskGroup from '../../components/TaskGroup';
-import styles from './friends.module.css';
 
 const Friends = () => {
     return (
