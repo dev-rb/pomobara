@@ -7,12 +7,17 @@ import styles from './navbar.module.css';
 
 const Navbar = () => {
 
-    const { setViewTaskModal } = React.useContext(TaskModalContext!);
+    const { setViewTaskModal, setTaskModalProps } = React.useContext(TaskModalContext!);
+
+    const createNewTask = () => {
+        setViewTaskModal!(true);
+        setTaskModalProps!({});
+    }
     return (
         <div className={styles.navContainer}>
             <button> <Link to='/'><FiHome size={25} color="#495156" /></Link> </button>
             <button> <Link to='/friends'><FiUsers size={25} color="#495156" /></Link> </button>
-            <button className={styles.navNewTaskButton} onClick={() => setViewTaskModal!(true)}> <MdAdd size={35} color="#151718" />  </button>
+            <button className={styles.navNewTaskButton} onClick={createNewTask}> <MdAdd size={35} color="#151718" />  </button>
             <button> <FiClock size={25} color="#495156" /> </button>
             <button> <FiHeadphones size={25} color="#495156" /> </button>
         </div>

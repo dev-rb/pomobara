@@ -17,11 +17,12 @@ const taskSlice = createSlice({
             state.tasks.push(payload);
         },
         updateTask: (state: TaskState, { payload }: PayloadAction<ITask>) => {
-            let findTask = state.tasks.find((val) => val.id === payload.id);
-
-            if (findTask) {
-                findTask = { ...payload };
-            }
+            state.tasks = state.tasks.map((task) => {
+                if (task.id === payload.id) {
+                    return payload;
+                }
+                return task;
+            });
         },
         changeTaskStatus: (state: TaskState, { payload }: PayloadAction<{ taskId: string, newStatus: TaskStatus }>) => {
             let taskWithId = state.tasks.find((val) => val.id === payload.taskId);
