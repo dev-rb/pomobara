@@ -18,9 +18,9 @@ const Navbar = () => {
             <button> <Link to='/'><FiHome size={25} color="#495156" /></Link> </button>
             <button> <Link to='/friends'><FiUsers size={25} color="#495156" /></Link> </button>
             <button className={styles.navNewTaskButton} onClick={createNewTask}> <MdAdd size={35} color="#151718" />  </button>
-            <button> <FiClock size={25} color="#495156" /> </button>
+            <button> <Link to='/timer'><FiClock size={25} color="#495156" /></Link> </button>
             <button> <FiHeadphones size={25} color="#495156" /> </button>
-        </div>
+        </div >
     );
 }
 

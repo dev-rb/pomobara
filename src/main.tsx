@@ -9,6 +9,7 @@ import Friends from './pages/Friends'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Provider } from 'react-redux'
 import { store } from './redux/store';
+import PomoTimer from './pages/PomoTimer'
 
 const updateSW = registerSW({
   onNeedRefresh() { },
@@ -21,6 +22,7 @@ ReactDOM.render(
         <Route path="/" element={<App />} >
           <Route index element={<Home />} />
           <Route path="/friends" element={<Friends />} />
+          <Route path="/timer" element={<PomoTimer />} />
         </Route>
       </Routes>
     </BrowserRouter>
