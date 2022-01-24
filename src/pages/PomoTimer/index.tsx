@@ -6,7 +6,7 @@ interface TimerSettings {
     longBreakTime: { length: number, occurences: number }
 }
 
-const defaultSettings: TimerSettings = { focusTime: { length: 25, occurences: 2, }, shortBreakTime: { length: 5, occurences: 2 }, longBreakTime: { length: 15, occurences: 1 } };
+const defaultSettings: TimerSettings = { focusTime: { length: 25, occurences: 8, }, shortBreakTime: { length: 5, occurences: 7 }, longBreakTime: { length: 15, occurences: 1 } };
 
 const PomoTimer = () => {
 
@@ -23,17 +23,49 @@ const PomoTimer = () => {
     }, [timerSettings])
 
     const createOrderOfTimes = () => {
+        let totalTime = getTotalTime;
 
+        let order: string[] = [];
+
+        let focusOccurences = timerSettings['focusTime'].occurences;
+        let shortOccurences = timerSettings['shortBreakTime'].occurences;
+        let longOccurences = timerSettings['longBreakTime'].occurences;
+
+        let totalOccurences = focusOccurences + shortOccurences + longOccurences;
+
+        let focusCount = 0;
+
+        // console.log(timerSettings[order[0] as keyof TimerSettings])
+
+        for (let i = 1; i < totalOccurences + 1; i++) {
+            if (focusCount % 4 === 0 && focusCount !== 0) {
+                order.push('longBreakTime');
+            }
+            else if (i % 2 === 0) {
+                console.log(i)
+                order.push('focusTime');
+                focusCount++;
+            } else if (i % 3 === 0) {
+                order.push('shortBreakTime');
+            }
+        }
+
+        console.log(order)
+        // f s f s f s f l
+        // Object.entries(timerSettings).forEach((setting: [string, any]) => {
+        //     console.log(setting[1])
+        // })
     }
 
     React.useEffect(() => {
         console.log(getTotalTime)
+        createOrderOfTimes()
 
     }, [])
 
 
     return (
-        <div className='w-full h-full'>
+        <div className='w-full h-full max-w-2xl'>
             <TimerDisplay />
         </div>
     );
