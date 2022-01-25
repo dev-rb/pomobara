@@ -31,6 +31,18 @@
     overflow: hidden !important; 
 }
 
+.TestAnim path{
+  stroke-dashoffset: 1000;
+  animation: testAnimation 10s linear forwards;
+}
+
+@keyframes testAnimation{
+  100%{
+    stroke-dashoffset: 0;
+
+  }
+}
+
 @media screen and (max-width: 500px){
   .ReactModal__Overlay--after-open{
     align-items: flex-end;

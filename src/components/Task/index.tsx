@@ -31,11 +31,11 @@ const Task = ({ id, text, dueDate, dueTime, status }: ITask) => {
     const openTask = () => {
         setViewTaskModal!(true);
         console.log(`Task trying to update: ${id}`);
-        setTaskModalProps!({ id, text, date: dueDate, status, time: dueTime });
+        setTaskModalProps!({ id, text, date: dueDate, status, time: dueTime, typeOfModal: 'update' });
     }
 
     return (
-        <div className='w-full bg-[#1C1E1F] flex flex-col justify-center items-center py-3 px-4 gap-4 rounded-md' onClick={openTask}>
+        <div className='w-full bg-[#1C1E1F] flex flex-col justify-center items-center py-3 px-4 gap-4 rounded-md cursor-pointer' onClick={openTask}>
             <div className='w-full flex items-center justify-between'>
                 <h2 className='max-w-[15rem] text-white text-xl font-semibold m-0 text-ellipsis whitespace-nowrap overflow-hidden'> {text} </h2>
                 <div className={`${styles.status} w-2 h-2 rounded-full`} style={style} />

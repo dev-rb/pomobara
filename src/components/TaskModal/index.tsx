@@ -31,10 +31,11 @@ export interface TaskModalProps {
     text?: string,
     date?: string,
     time?: string,
-    status?: TaskStatus
+    status?: TaskStatus,
+    typeOfModal?: string
 }
 
-const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started'] }: TaskModalProps) => {
+const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started'], typeOfModal = 'create' }: TaskModalProps) => {
 
     const [taskText, setTaskText] = React.useState(text);
     const [taskDate, setTaskDate] = React.useState<string>(date ? date : "");
@@ -59,7 +60,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     return (
         <div className='max-w-md w-screen bg-[#1C1E1F] max-h-[42rem] h-screen flex flex-col px-4 py-4 pt-8 z-10 animate-modalSlideIn lg:px-8 lg:max-w-2xl'>
             <div className='w-full flex items-center justify-center'>
-                <h1 className='text-white text-2xl font-semibold'> Create a task </h1>
+                <h1 className='text-white text-2xl font-semibold'> {typeOfModal === 'create' ? 'Create a' : 'Update'} task </h1>
             </div>
             <div className='h-full w-full flex flex-col gap-8 mt-4 text-[#596367] text-base'>
                 <div className='flex flex-col'>
