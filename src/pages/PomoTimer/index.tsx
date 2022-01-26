@@ -48,9 +48,7 @@ const PomoTimer = () => {
                 order.push('shortBreakTime');
             }
         }
-
-        console.log(order)
-
+        // console.log(order)
         return order;
     }
 
@@ -70,6 +68,7 @@ interface DisplayProps {
 const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
 
     const [startAngles, setStartAngles] = React.useState<number[]>([]);
+    const [startTimings, setStartTimings] = React.useState<number[]>([]);
 
     function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
         var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -95,19 +94,33 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
         return d;
     }
 
-    React.useEffect(() => {
-        let startAngles = [0];
+    const generateStartAngles = () => {
+        let angles = [0];
         let totalOccurences = settings['focusTime'].occurences + settings['shortBreakTime'].occurences + settings['longBreakTime'].occurences;
         order.forEach((val) => {
-            startAngles.push(((settings[val as keyof TimerSettings].length) / totalTime) * 100 + startAngles[startAngles.length - 1] + 65 / (totalOccurences / 4))
+            angles.push((((settings[val as keyof TimerSettings].length) / totalTime) * 100) + angles[angles.length - 1] + (65 / (totalOccurences / 4)))
         })
-        setStartAngles(startAngles)
-    }, [])
+        // console.log(65 / (totalOccurences / 4))
+        setStartAngles(angles);
+    }
+
+    const generateStartTimings = () => {
+        let timings = [0];
+
+        order.forEach((val) => {
+            timings.push(settings[val as keyof TimerSettings].length + timings[timings.length - 1]);
+        })
+        setStartTimings(timings);
+    }
 
     React.useEffect(() => {
-        console.log(startAngles)
-        // console.log(angles)
-    }, [startAngles])
+        generateStartAngles();
+        // generateStartTimings();
+    }, [])
+
+    // React.useEffect(() => {
+    //     console.log(startAngles)
+    // }, [startAngles])
 
     const getColorForTime = (time: string) => {
         return timeColors[time]
@@ -135,10 +148,22 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
                 </filter>
             </defs>
             <circle cx="100" cy="100" r="58" fill='#151718' stroke="#242627" strokeWidth={1} />
-
-            {startAngles.map((val, index) => <path fill='none' strokeDasharray={1000} stroke={getColorForTime(order[index])} strokeWidth={1} d={describeArc(100, 100, 65, val, startAngles[index + 1])} filter="url(#glow)" >
-                {/* <animate id="path" attributeName="d" from={describeArc(100, 100, 65, startAngles[index - 1], startAngles[index])} to={describeArc(100, 100, 65, val, startAngles[index + 1])} dur={index} /> */}
-            </path>)}
+            <text x="50%" y="50%" textAnchor='middle' fill='white'>
+                <tspan dominantBaseline='middle' fontSize={'2rem'} fontWeight={'400'} fontFamily='Open Sans'>25:00 </tspan>
+            </text>
+            {startAngles.map((val, index) => {
+                const style = {
+                    '--start': `${startTimings[index] * 60}s`,
+                    '--end': `${settings[order[index > 7 ? 0 : index] as keyof TimerSettings].length * 60}s`
+                } as React.CSSProperties;
+                return (
+                    <path key={val}
+                        style={style}
+                        fill='none' strokeLinecap='round' strokeLinejoin='round'
+                        strokeDasharray={`${(15 - 0) * 408.4070449667 / 100} 408.4070449667`} stroke={getColorForTime(order[index])}
+                        strokeWidth={1} d={describeArc(100, 100, 65, val, startAngles[index + 1])} filter="url(#glow)" />
+                );
+            })}
 
             {/* Focus Time */}
             {/* <circle className='relative stroke-focus-glow' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={255} strokeDasharray={408.4070449667} /> */}

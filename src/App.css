@@ -32,15 +32,29 @@
 }
 
 .TestAnim path{
-  stroke-dashoffset: 1000;
-  animation: testAnimation 10s linear forwards;
+  stroke-dashoffset: 0;
+  transition: stroke-dasharray 1s;
+}
+
+.TestAnim path{
+  /* animation-name: testAnimation;
+  animation-delay: var(--start);
+  animation-duration: var(--end);
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+  animation-play-state: running; */
+  /* animation: testAnimation var(--start) linear var(--end) forwards; */
 }
 
 @keyframes testAnimation{
-  100%{
+  0%{
     stroke-dashoffset: 0;
-
   }
+  50%, 100%{
+    stroke-dashoffset: 1000;
+    
+  }
+ 
 }
 
 @media screen and (max-width: 500px){
