@@ -29,7 +29,6 @@ const TaskModalContextProvider = ({ children }: Props) => {
   );
 }
 
-
 function App() {
 
   return (
