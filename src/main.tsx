@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import { registerSW } from 'virtual:pwa-register'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Friends from './pages/Friends'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -12,7 +12,7 @@ import { IRootState, store } from './redux/store';
 import PomoTimer from './pages/PomoTimer'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { signIn, signOut } from './redux/slices/authSlice'
 
 const updateSW = registerSW({
@@ -25,6 +25,7 @@ function AppRoutes() {
   const auth = getAuth();
   const user = useSelector((state: IRootState) => state.user.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
 
   React.useEffect(() => {
@@ -40,9 +41,9 @@ function AppRoutes() {
   }, [auth, dispatch])
 
   useEffect(() => {
-    setTimeout(() => {
-      console.log(user);
-    }, 1500)
+    if (user) {
+      navigate('/')
+    }
   }, [user])
 
   return (

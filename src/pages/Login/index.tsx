@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider } from 'firebase/auth';
 import capybara from '../../images/capybara-pomo.png';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { signInUser } from '../../redux/slices/authSlice';
+import { IRootState } from '../../redux/store';
 
 const Login = () => {
 
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+
+    const error = useSelector((state: IRootState) => state.user.error);
 
     const dispatch = useDispatch();
 
@@ -23,6 +26,10 @@ const Login = () => {
     const signInWithGoogle = () => {
 
     }
+
+    React.useEffect(() => {
+        console.log(error)
+    }, [error])
 
     return (
         <div className='w-full h-fit flex flex-col items-center justify-center p-4 px-8 gap-14 md:max-w-xl'>
