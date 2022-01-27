@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import { TaskModalProps } from './components/TaskModal';
-import ReloadPrompt from './ReloadPrompt'
+// import ReloadPrompt from './ReloadPrompt'
 
 interface TaskModalContextInterface {
   viewTaskModal: boolean,
@@ -35,7 +35,7 @@ function App() {
     <TaskModalContextProvider>
       <div className="App">
         <Header />
-        <ReloadPrompt />
+        {/* <ReloadPrompt /> */}
         <Outlet />
         {/* <Navbar /> */}
 

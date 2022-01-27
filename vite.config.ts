@@ -60,11 +60,11 @@ if (reload) {
   replaceOptions.__RELOAD_SW__ = 'true'
 }
 
-
+// VitePWA(pwaOptions), 
 // https://vitejs.dev/config/
 export default defineConfig({
   envPrefix: ['VITE_', 'FIREBASE_'],
-  plugins: [react(), VitePWA(pwaOptions), replace({ replaceOptions, preventAssignment: true })],
+  plugins: [react(), replace({ replaceOptions, preventAssignment: true })],
   optimizeDeps: {
     entries: ['./src/app.tsx']
   }

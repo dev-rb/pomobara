@@ -6,7 +6,6 @@
       "DOM",
       "DOM.Iterable",
       "ESNext",
-      "WebWorker"
     ],
     "allowJs": false,
     "skipLibCheck": false,
@@ -21,8 +20,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": [
-      "vite-plugin-pwa/client",
-      "Node"
+      // "vite-plugin-pwa/client"
     ]
   },
   "include": [

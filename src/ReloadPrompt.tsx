@@ -2,7 +2,7 @@
 import React from 'react'
 import './ReloadPrompt.css'
 
-import { useRegisterSW } from 'virtual:pwa-register/react'
+// import { useRegisterSW } from 'virtual:pwa-register/react'
 
 function ReloadPrompt() {
     // replaced dynamically
@@ -10,37 +10,37 @@ function ReloadPrompt() {
     // replaced dyanmicaly
     const reloadSW = '__RELOAD_SW__'
 
-    const {
-        offlineReady: [offlineReady, setOfflineReady],
-        needRefresh: [needRefresh, setNeedRefresh],
-        updateServiceWorker,
-    } = useRegisterSW({
-        onRegistered(r) {
-            // @ts-ignore
-            if (reloadSW === 'true') {
-                r && setInterval(() => {
-                    console.log('Checking for sw update')
-                    r.update()
-                }, 20000 /* 20s for testing purposes */)
-            }
-            else {
-                // eslint-disable-next-line prefer-template
-                console.log('SW Registered: ' + r)
-            }
-        },
-        onRegisterError(error) {
-            console.log('SW registration error', error)
-        },
-    })
+    // const {
+    //     offlineReady: [offlineReady, setOfflineReady],
+    //     needRefresh: [needRefresh, setNeedRefresh],
+    //     updateServiceWorker,
+    // } = useRegisterSW({
+    //     onRegistered(r) {
+    //         // @ts-ignore
+    //         if (reloadSW === 'true') {
+    //             r && setInterval(() => {
+    //                 console.log('Checking for sw update')
+    //                 r.update()
+    //             }, 20000 /* 20s for testing purposes */)
+    //         }
+    //         else {
+    //             // eslint-disable-next-line prefer-template
+    //             console.log('SW Registered: ' + r)
+    //         }
+    //     },
+    //     onRegisterError(error) {
+    //         console.log('SW registration error', error)
+    //     },
+    // })
 
-    const close = () => {
-        setOfflineReady(false)
-        setNeedRefresh(false)
-    }
+    // const close = () => {
+    //     setOfflineReady(false)
+    //     setNeedRefresh(false)
+    // }
 
     return (
         <div className="ReloadPrompt-container">
-            {(offlineReady || needRefresh)
+            {/* {(offlineReady || needRefresh)
                 && <div className="ReloadPrompt-toast">
                     <div className="ReloadPrompt-message">
                         {offlineReady
@@ -52,7 +52,7 @@ function ReloadPrompt() {
                     <button className="ReloadPrompt-toast-button" onClick={() => close()}>Close</button>
                 </div>
             }
-            <div className="ReloadPrompt-date">{buildDate}</div>
+            <div className="ReloadPrompt-date">{buildDate}</div> */}
         </div>
     )
 }

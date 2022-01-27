@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
-import { registerSW } from 'virtual:pwa-register'
+// import { registerSW } from 'virtual:pwa-register'
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Friends from './pages/Friends'
@@ -15,10 +15,10 @@ import Register from './pages/Register'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { signIn, signOut } from './redux/slices/authSlice'
 
-const updateSW = registerSW({
-  onNeedRefresh() { },
-  onOfflineReady() { },
-})
+// const updateSW = registerSW({
+//   onNeedRefresh() { },
+//   onOfflineReady() { },
+// })
 
 function AppRoutes() {
 
