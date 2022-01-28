@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { initializeApp } from 'firebase/app';
-import { signInWithEmailAndPassword, AuthError, getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, AuthError, getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signOut, signInWithPopup } from 'firebase/auth';
 import { ITask } from '../../components/Task';
 import { firebaseConfig } from '../../configs/firebase';
 import { signIn } from '../slices/authSlice';
@@ -17,7 +17,7 @@ export const tasksApi = createApi({
             query: (userId) => `tasks/${userId}`
         }),
         signInUser: build.mutation<string, { email: string, password: string }>({
-            queryFn: async ({ email, password }: { email: string, password: string }, { dispatch }) => {
+            queryFn: async ({ email, password }: { email: string, password: string }) => {
                 try {
                     // console.log("Sign in called in thunk")
                     const response = await signInWithEmailAndPassword(auth, email, password).then((newUser) => newUser.user.getIdToken());
@@ -29,7 +29,49 @@ export const tasksApi = createApi({
                     return { error: { error: error.code, status: 'CUSTOM_ERROR', data: { errorMsg: "Failed to sign in." } } }
                 }
             }
-        })
+        }),
+        signInWithGoogle: build.mutation<string, void>({
+            queryFn: async () => {
+                try {
+                    // console.log("Sign in called in thunk")
+                    const response = await signInWithPopup(auth, provider).then((newUser) => newUser.user.getIdToken());
+                    return { data: response };
+                }
+                catch (err) {
+                    const error = err as AuthError;
+                    console.log(error.code)
+                    return { error: { error: error.code, status: 'CUSTOM_ERROR', data: { errorMsg: "Failed to sign in." } } }
+                }
+            }
+        }),
+        signUpUser: build.mutation<string, { email: string, password: string }>({
+            queryFn: async ({ email, password }: { email: string, password: string }) => {
+                try {
+                    // console.log("Sign in called in thunk")
+                    const response = await createUserWithEmailAndPassword(auth, email, password).then((newUser) => newUser.user.getIdToken());
+                    return { data: response };
+                }
+                catch (err) {
+                    const error = err as AuthError;
+                    console.log(error.code)
+                    return { error: { error: error.code, status: 'CUSTOM_ERROR', data: { errorMsg: "Failed to sign up." } } }
+                }
+            }
+        }),
+        signOutUser: build.mutation<string, void>({
+            queryFn: async () => {
+                try {
+                    // console.log("Sign in called in thunk")
+                    await signOut(auth);
+                    return { data: "Sign out successful" };
+                }
+                catch (err) {
+                    const error = err as AuthError;
+                    console.log(error.code)
+                    return { error: { error: error.code, status: 'CUSTOM_ERROR', data: { errorMsg: "Failed to sign out." } } }
+                }
+            }
+        }),
     })
 
 })
