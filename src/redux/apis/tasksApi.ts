@@ -76,4 +76,4 @@ export const tasksApi = createApi({
 
 })
 
-export const { useSignInUserMutation } = tasksApi;
+export const { useSignInUserMutation, useSignInWithGoogleMutation } = tasksApi;

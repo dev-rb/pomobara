@@ -6,7 +6,7 @@ import capybara from '../../images/capybara-pomo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { googleSignIn, signIn, signInUser } from '../../redux/slices/authSlice';
 import { IRootState } from '../../redux/store';
-import { useSignInUserMutation } from '../../redux/apis/tasksApi';
+import { useSignInUserMutation, useSignInWithGoogleMutation } from '../../redux/apis/tasksApi';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SerializedError } from '@reduxjs/toolkit';
 
@@ -21,6 +21,7 @@ const Login = () => {
     const [noUserError, setNoUserError] = React.useState("");
 
     const [login, data] = useSignInUserMutation();
+    const [googleLogin, googleLoginData] = useSignInWithGoogleMutation();
 
     const dispatch = useDispatch();
 
@@ -50,8 +51,14 @@ const Login = () => {
         // resetValues();
     }
 
-    const signInWithGoogle = () => {
-        dispatch(googleSignIn());
+    const signInWithGoogle = async () => {
+        try {
+            const res = await googleLogin().unwrap();
+            dispatch(signIn(res));
+        } catch (err) {
+            const error = err as FetchBaseQueryError | SerializedError;
+
+        }
 
     }
 
