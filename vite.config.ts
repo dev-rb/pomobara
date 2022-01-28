@@ -67,6 +67,9 @@ export default defineConfig({
   plugins: [react(), replace({ replaceOptions, preventAssignment: true })],
   optimizeDeps: {
     entries: ['./src/app.tsx']
+  },
+  build: {
+    sourcemap: true
   }
 })
 

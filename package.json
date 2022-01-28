@@ -7,6 +7,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@redux-offline/redux-offline": "^2.6.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@types/react-datepicker": "^4.3.4",
     "@types/react-modal": "^3.13.1",
@@ -24,7 +25,7 @@
   "devDependencies": {
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
-    "@vitejs/plugin-react": "^1.0.7",
+    "@vitejs/plugin-react": "1.0.8",
     "autoprefixer": "^10.4.2",
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.15",

@@ -4,35 +4,71 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider } from 'firebase/auth';
 import capybara from '../../images/capybara-pomo.png';
 import { useDispatch, useSelector } from 'react-redux';
-import { signInUser } from '../../redux/slices/authSlice';
+import { googleSignIn, signIn, signInUser } from '../../redux/slices/authSlice';
 import { IRootState } from '../../redux/store';
+import { useSignInUserMutation } from '../../redux/apis/tasksApi';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const Login = () => {
 
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [submitting, setSubmitting] = React.useState(false);
 
-    const error = useSelector((state: IRootState) => state.user.error);
+    const [emailError, setEmailError] = React.useState("");
+    const [passwordError, setPasswordError] = React.useState("");
+    const [noUserError, setNoUserError] = React.useState("");
+
+    const [login, data] = useSignInUserMutation();
 
     const dispatch = useDispatch();
 
-    const signInWithEmail = (e: React.FormEvent) => {
+    // const resetValues = React.useCallback(() => {
+    //     setTimeout(() => {
+    //         // if (error === null) {
+    //         //     setEmail("");
+    //         //     setPassword("");
+    //         // }
+    //         setSubmitting(false);
+    //     }, 600)
+    // }, [error, emailError, passwordError, noUserError])
+
+    const signInWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(signInUser({ email, password }));
-        setEmail("");
-        setPassword("");
+        // console.log("Submit login")
+        // setSubmitting(true);
+        try {
+            const res = await login({ email, password }).unwrap();
+            dispatch(signIn(res))
+
+        } catch (err) {
+            const error = err as FetchBaseQueryError | SerializedError
+            console.log(err)
+        }
+        // dispatch(signInUser({ email, password }));
+        // resetValues();
     }
 
     const signInWithGoogle = () => {
+        dispatch(googleSignIn());
 
     }
 
     React.useEffect(() => {
-        console.log(error)
-    }, [error])
+        console.log(data)
+        if (data.error !== undefined) {
+            setNoUserError('Invalid email or password');
+        }
+    }, [data])
 
     return (
-        <div className='w-full h-screen flex justify-center'>
+        <div className='w-full h-screen flex justify-center relative'>
+            {data.isLoading &&
+                <div className='text-white absolute text-xl flex items-center justify-center bg-black opacity-50 h-screen w-screen'>
+                    <h1> Loading... </h1>
+                </div>
+            }
             <div className='w-full h-fit flex flex-col items-center justify-center p-4 px-8 gap-14 md:max-w-xl'>
                 {/* Capybara */}
                 <div className='w-full flex justify-center mt-12'>
@@ -44,10 +80,11 @@ const Login = () => {
                     <div className='w-full flex flex-col gap-4'>
                         <form className='w-full flex flex-col gap-4' onSubmit={signInWithEmail}>
                             <input className='h-14 outline-none border-2 bg-transparent border-[#292C2D] px-2 text-white placeholder:text-[#4C5053] text-xl'
-                                placeholder='Email' type='email' required onChange={(e) => setEmail(e.currentTarget.value)} />
+                                placeholder='Email' type='email' value={email} required onChange={(e) => setEmail(e.currentTarget.value)} />
                             <input className='h-14 outline-none border-2 bg-transparent border-[#292C2D] px-2 text-white placeholder:text-[#4C5053] text-xl'
-                                placeholder='Password' type='password' required onChange={(e) => setPassword(e.currentTarget.value)} />
+                                placeholder='Password' type='password' value={password} required onChange={(e) => setPassword(e.currentTarget.value)} />
                             <Link className='ml-auto text-[#464646]' to={'/reset'}> Forgot Password </Link>
+                            <span className='text-red-600 text-xs mt-[-1rem]'> {noUserError} </span>
                             <input className='w-full h-14 bg-[#2881D9] text-white text-xl font-semibold' type='submit' value={"Sign In"} />
 
                         </form>
@@ -61,7 +98,7 @@ const Login = () => {
                         <p className='w-full text-center text-white'> Or Sign In With </p>
                         <div className='w-full border-t-[1px] border-t-[#707070]' />
                     </div>
-                    <button className='flex items-center text-white gap-8 bg-[#0943a2] px-6 py-2'> <FcGoogle size={40} /> Sign in with google </button>
+                    <button className='flex items-center text-white gap-8 bg-[#0943a2] px-6 py-2' onClick={signInWithGoogle}> <FcGoogle size={40} /> Sign in with google </button>
                     <div className='w-full flex gap-4 items-center justify-center mt-auto'>
                         <p className='text-white'> Don't have an account? </p>
                         <Link className='text-[#2881D9]' to={'/register'}> Sign Up </Link>

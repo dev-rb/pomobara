@@ -4,8 +4,12 @@ import styles from './level.module.css';
 const initial = 408.4070449667
 const need = 200;
 
+interface LevelProps {
+    currentLevel?: number,
+    xp?: number
+}
 
-const Level = () => {
+const Level = ({ currentLevel, xp }: LevelProps) => {
 
     const [currentXp, setCurrentXp] = React.useState(initial);
     const [currentLvl, setCurrentLvl] = React.useState(1);

@@ -28,7 +28,7 @@ const Register = () => {
                     <img src={capybara} alt='A capybara head image' className='w-[40%] max-w-[12rem]' />
                 </div>
 
-                {/* Sign in Info */}
+                {/* Sign up Info */}
                 <div className='w-full flex flex-col items-center gap-12'>
                     <div className='w-full flex flex-col gap-4'>
                         <form className='w-full flex flex-col gap-4' onSubmit={signUpWithEmail}>
