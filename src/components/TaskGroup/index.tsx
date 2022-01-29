@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { useGetTasksQuery } from '../../redux/apis/tasksApi';
+import { useGetTasksQuery } from '../../redux/apis/tasksEndpoints';
 import { IRootState } from '../../redux/store';
 import Task, { ITask, TaskStatus } from '../Task';
 

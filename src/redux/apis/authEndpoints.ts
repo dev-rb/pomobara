@@ -1,74 +1,16 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { initializeApp } from 'firebase/app';
-import { signInWithEmailAndPassword, AuthError, getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signOut, signInWithPopup } from 'firebase/auth';
-import { ITask } from '../../components/Task';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, AuthError, signInWithPopup, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { firebaseConfig } from '../../configs/firebase';
-import { signIn } from '../slices/authSlice';
-import { IRootState } from '../store';
+import { api } from './api'
 
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
-const BASE_URL = 'http://localhost:5000/';
 
-export const tasksApi = createApi({
-    baseQuery: fetchBaseQuery({
-        baseUrl: BASE_URL,
-        prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as IRootState).user.user;
-
-            if (token) {
-                // headers.set('Access-Control-Allow-Origin', '*')
-                headers.set('Access-Control-Allow-Credentials', 'true')
-                headers.set('Authorization', `${token}`);
-            }
-            // console.log(headers.get('Authorization'))
-            return headers;
-        }
-    }),
-    tagTypes: ['Task'],
+const authApi = api.injectEndpoints({
     endpoints: (build) => ({
-        getTasks: build.query<ITask[], void>({
-            query: () => ({
-                url: `tasks`,
-                // mode: 'no-cors',
-                method: 'GET',
-            }),
-            transformResponse: (res: ITask[]) => JSON.parse(JSON.stringify(res)),
-            providesTags: (result = [], error, arg) =>
-                result
-                    ? [
-                        ...result.map(({ id }) => ({ type: 'Task' as const, id })),
-                        { type: 'Task', id: 'LIST' },
-                    ]
-                    : [{ type: 'Task', id: 'LIST' }],
-        }),
-        newTaskForUser: build.mutation<string, ITask>({
-            query: (task: ITask) => ({
-                url: `tasks/create`,
-                // mode: 'cors',
-                method: 'POST',
-                body: task,
-                headers: { 'Content-Type': 'application/json' }
-            }),
-            async onQueryStarted(task, { dispatch, queryFulfilled }) {
-                const result = dispatch(
-                    tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
-                        draft.push(task)
-                    })
-                )
-
-                try {
-                    await queryFulfilled;
-                } catch {
-                    result.undo();
-                }
-            },
-            invalidatesTags: [{ type: 'Task', id: 'LIST' }]
-
-        }),
         signInUser: build.mutation<string, { email: string, password: string }>({
             queryFn: async ({ email, password }: { email: string, password: string }) => {
                 try {
@@ -91,7 +33,7 @@ export const tasksApi = createApi({
                     // console.log(endpoint)
                     // console.log("Sign in called in thunk")
                     const response = await signInWithPopup(auth, provider).then((newUser) => newUser.user.getIdToken());
-                    await fetch(BASE_URL + 'signup', { headers: { 'Authorization': response } })
+
                     return { data: response };
                 }
                 catch (err) {
@@ -129,13 +71,11 @@ export const tasksApi = createApi({
                 }
             }
         }),
-    })
-
+    }),
+    overrideExisting: false,
 })
 
 export const {
     useSignInUserMutation,
     useSignInWithGoogleMutation,
-    useGetTasksQuery,
-    useNewTaskForUserMutation
-} = tasksApi;
+} = authApi;

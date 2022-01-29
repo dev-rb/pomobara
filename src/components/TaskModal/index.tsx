@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { addTask, updateTask } from '../../redux/slices/taskSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { TaskModalContext } from '../../App';
-import { useNewTaskForUserMutation } from '../../redux/apis/tasksApi';
+import { useNewTaskMutation } from '../../redux/apis/tasksEndpoints';
 
 const CustomDateInput = React.forwardRef(({ onClick, id, onChange, value }: React.HTMLProps<HTMLInputElement>, ref: React.Ref<HTMLInputElement>) => {
     return (
@@ -45,7 +45,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
 
     const { setViewTaskModal } = React.useContext(TaskModalContext!);
 
-    const [newTask, result] = useNewTaskForUserMutation();
+    const [newTask, result] = useNewTaskMutation();
 
     const dispatch = useDispatch();
 

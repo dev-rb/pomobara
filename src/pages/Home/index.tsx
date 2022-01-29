@@ -5,7 +5,6 @@ import TaskGroup from '../../components/TaskGroup';
 import ReactModal from 'react-modal';
 import TaskModal, { TaskModalProps } from '../../components/TaskModal';
 import { TaskModalContext } from '../../App';
-import { useNewTaskForUserMutation } from '../../redux/apis/tasksApi';
 
 ReactModal.setAppElement('#root')
 

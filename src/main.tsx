@@ -42,7 +42,7 @@ function AppRoutes() {
 
   useEffect(() => {
     if (user) {
-      console.log("User we got: ", user)
+      // console.log("User we got: ", user)
       navigate('/')
     }
   }, [user])

@@ -6,9 +6,9 @@ import capybara from '../../images/capybara-pomo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { googleSignIn, signIn, signInUser } from '../../redux/slices/authSlice';
 import { IRootState } from '../../redux/store';
-import { useSignInUserMutation, useSignInWithGoogleMutation } from '../../redux/apis/tasksApi';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SerializedError } from '@reduxjs/toolkit';
+import { useSignInUserMutation, useSignInWithGoogleMutation } from '../../redux/apis/authEndpoints';
 
 const Login = () => {
 
