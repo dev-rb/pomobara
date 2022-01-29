@@ -43,7 +43,7 @@ function AppRoutes() {
   useEffect(() => {
     if (user) {
       console.log("User we got: ", user)
-      // navigate('/')
+      navigate('/')
     }
   }, [user])
 
