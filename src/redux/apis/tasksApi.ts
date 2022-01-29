@@ -28,35 +28,47 @@ export const tasksApi = createApi({
             return headers;
         }
     }),
+    tagTypes: ['Task'],
     endpoints: (build) => ({
-        getTasksForUser: build.query<ITask[], void>({
+        getTasks: build.query<ITask[], void>({
             query: () => ({
                 url: `tasks`,
                 // mode: 'no-cors',
                 method: 'GET',
-            })
+            }),
+            transformResponse: (res: ITask[]) => JSON.parse(JSON.stringify(res)),
+            providesTags: (result = [], error, arg) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({ type: 'Task' as const, id })),
+                        { type: 'Task', id: 'LIST' },
+                    ]
+                    : [{ type: 'Task', id: 'LIST' }],
         }),
         newTaskForUser: build.mutation<string, ITask>({
             query: (task: ITask) => ({
                 url: `tasks/create/${task.id}`,
-                // mode: 'no-cors',
+                // mode: 'cors',
                 method: 'POST',
                 body: task,
+                // headers: { 'Content-Type': 'application/json' }
             }),
+            // async onQueryStarted(task, { dispatch, queryFulfilled }) {
+            //     const result = dispatch(
+            //         tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
+            //             draft.push(task)
+            //         })
+            //     )
 
-            async onQueryStarted(task, { dispatch, queryFulfilled }) {
-                const result = dispatch(
-                    tasksApi.util.updateQueryData('getTasksForUser', undefined, (draft) => {
-                        draft.push(task);
-                    })
-                )
+            //     try {
+            //         console.log("This is called")
+            //         await queryFulfilled;
+            //     } catch {
+            //         result.undo();
+            //     }
+            // },
+            invalidatesTags: [{ type: 'Task', id: 'LIST' }]
 
-                try {
-                    await queryFulfilled;
-                } catch {
-                    result.undo();
-                }
-            }
         }),
         signInUser: build.mutation<string, { email: string, password: string }>({
             queryFn: async ({ email, password }: { email: string, password: string }) => {
@@ -125,6 +137,6 @@ export const tasksApi = createApi({
 export const {
     useSignInUserMutation,
     useSignInWithGoogleMutation,
-    useGetTasksForUserQuery,
+    useGetTasksQuery,
     useNewTaskForUserMutation
 } = tasksApi;

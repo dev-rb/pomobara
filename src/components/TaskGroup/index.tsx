@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { useGetTasksForUserQuery } from '../../redux/apis/tasksApi';
+import { useGetTasksQuery } from '../../redux/apis/tasksApi';
 import { IRootState } from '../../redux/store';
 import Task, { ITask, TaskStatus } from '../Task';
 
@@ -12,19 +12,19 @@ interface TaskGroupProps {
 
 const makeSelectTasks = () =>
     createSelector(
-        (state: IRootState) => state.tasks.tasks,
+        (state?: ITask[]) => state,
         (_: any, filter: string) => filter,
-        (tasks, filter: string) => tasks.filter((task) => { return TaskStatus[task.status] === filter }));
+        (tasks, filter: string) => tasks?.filter((task) => { return TaskStatus[task.status] === filter }));
 
 const TaskGroup = ({ groupTitle }: TaskGroupProps) => {
 
-    // const selectTasks = React.useMemo(makeSelectTasks, []);
+    const selectTasks = React.useMemo(makeSelectTasks, []);
 
     // const tasks = useSelector((state: IRootState) => selectTasks(state, groupTitle), shallowEqual);
 
-    const { tasks = [] } = useGetTasksForUserQuery(undefined, {
+    const { tasks = [], refetch } = useGetTasksQuery(undefined, {
         selectFromResult: ({ data }) => ({
-            tasks: data?.filter((task) => TaskStatus[task.status] === groupTitle)
+            tasks: selectTasks(data, groupTitle)
         })
     });
 
