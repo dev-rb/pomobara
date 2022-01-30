@@ -51,8 +51,6 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     const [updateTask] = useUpdateTaskMutation();
     const [deleteTask, { isLoading }] = useDeleteTaskMutation();
 
-    const dispatch = useDispatch();
-
     const createNewTask = () => {
         const task = { id: nanoid(), text: taskText, dueDate: taskDate, dueTime: taskTime, status: taskStatus };
         newTask(task);
@@ -90,7 +88,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
             <div className='h-full w-full flex flex-col gap-8 mt-4 text-[#596367] text-base'>
                 <div className='flex flex-col'>
                     <h6> Task Title </h6>
-                    <textarea className='bg-[#2E3234] mt-2 resize-none text-white outline-none focus:outline-[#596367] focus:outline-[1px] min-h-[5rem] rounded-md p-2' value={taskText} onChange={(e) => setTaskText(e.currentTarget.value)}></textarea>
+                    <textarea className='bg-[#2E3234] mt-2 resize-none text-white outline-none focus:outline-[#596367] focus:outline-[1px] min-h-[5rem] rounded-md p-2' required value={taskText} onChange={(e) => setTaskText(e.currentTarget.value)}></textarea>
                 </div>
 
                 <div className='flex flex-col w-full'>

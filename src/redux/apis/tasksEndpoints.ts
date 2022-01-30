@@ -1,7 +1,7 @@
 import { ITask } from '../../components/Task';
 import { api } from './api'
 
-const tasksApi = api.injectEndpoints({
+export const tasksApi = api.injectEndpoints({
     endpoints: (build) => ({
         getTasks: build.query<ITask[], void>({
             query: () => ({
@@ -9,12 +9,11 @@ const tasksApi = api.injectEndpoints({
                 // mode: 'no-cors',
                 method: 'GET',
             }),
-            transformResponse: (res: ITask[]) => JSON.parse(JSON.stringify(res)),
             providesTags: (result = [], error, arg) =>
                 result
                     ? [
-                        ...result.map(({ id }) => ({ type: 'Task' as const, id })),
                         { type: 'Task', id: 'LIST' },
+                        ...result.map(({ id }) => ({ type: 'Task' as const, id })),
                     ]
                     : [{ type: 'Task', id: 'LIST' }],
         }),
@@ -24,8 +23,7 @@ const tasksApi = api.injectEndpoints({
                 // mode: 'no-cors',
                 method: 'GET',
             }),
-            transformResponse: (res: ITask) => JSON.parse(JSON.stringify(res)),
-            providesTags: (result, error, id) => [{ type: 'Task', id }],
+            providesTags: (result, error, id) => [{ type: 'Task', id: 'LIST' }],
 
         }),
         newTask: build.mutation<void, ITask>({
@@ -40,46 +38,50 @@ const tasksApi = api.injectEndpoints({
                 const result = dispatch(
                     tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
                         draft.push(task)
+                        console.log({ ...draft }, { ...task })
                     })
                 )
 
                 console.log("Added: ", result)
 
+                const old = Date.now();
                 try {
                     await queryFulfilled;
-                } catch {
+                    console.log(Date.now() - old)
+                } catch (err) {
+                    console.log("Failed", err)
                     result.undo();
                 }
             },
             invalidatesTags: [{ type: 'Task', id: 'LIST' }]
 
         }),
-        updateTask: build.mutation<void, ITask>({
+        updateTask: build.mutation<string, ITask>({
             query: (task) => ({
                 url: `tasks/update/${task.id}`,
                 method: 'PUT',
                 body: task,
                 headers: { 'Content-Type': 'application/json' }
             }),
-            async onQueryStarted({ ...task }, { dispatch, queryFulfilled }) {
+            async onQueryStarted({ id, ...task }, { dispatch, queryFulfilled }) {
                 console.log("Before updateQueryData")
-                const result = dispatch(tasksApi.util.updateQueryData('getTask', task.id, (draft) => {
+                const result = dispatch(tasksApi.util.updateQueryData('getTask', id, (draft) => {
                     console.log("Update Query Called")
-                    console.log(draft)
-                    Object.assign(draft, { ...task });
+                    console.log(draft, task);
+                    Object.assign(draft, task);
                 }))
                 // const resTwo = dispatch(tasksApi.util.patchQueryData('getTask', task.id, result.patches));
-                console.log(result)
                 console.log("After updateQueryData")
-
+                const old = Date.now();
                 try {
                     await queryFulfilled;
+                    console.log(Date.now() - old)
                 } catch (err) {
                     console.log("Failed", err)
                     result.undo();
                 }
             },
-            invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }, 'Level']
+            invalidatesTags: (_, __, { id }) => [{ type: 'Task', id: id }, 'Level']
         }),
         deleteTask: build.mutation<void, string>({
             query: (taskId) => ({

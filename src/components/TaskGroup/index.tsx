@@ -34,10 +34,10 @@ const TaskGroup = ({ groupTitle }: TaskGroupProps) => {
 
     const { tasks = [], isFetching, isLoading } = useGetTasksQuery(undefined, {
         selectFromResult: ({ data, isFetching, isLoading }) => ({
-            tasks: selectTasks(data, groupTitle),
+            tasks: data?.filter((task) => { return TaskStatus[task.status] === groupTitle }),
             isFetching,
             isLoading
-        })
+        }),
     });
 
     return (
@@ -46,10 +46,10 @@ const TaskGroup = ({ groupTitle }: TaskGroupProps) => {
                 <h1 className='text-white m-0 text-2xl font-semibold'>{groupTitle}</h1>
                 <button className='bg-transparent outline-hidden border-none text-[#2881D9] font-normal' onClick={() => setIsMinimized(!isMinimized)}> {isMinimized ? 'View All' : 'Hide All'} </button>
             </div>
-            <div className={`${isMinimized ? styles.minimized : ''}  w-full h-full flex flex-col gap-8`}>
-                {isLoading ?
+            <div className={`${isMinimized ? styles.minimized : ''}  w-full h-full flex flex-col gap-8 items-center`}>
+                {isLoading || isFetching ?
                     <LoadingSpinner /> :
-                    tasks.map((task) => <Task key={task.id} id={task.id} />)
+                    tasks.map((task) => <Task key={task.id} {...task} />)
                 }
             </div>
         </div>
