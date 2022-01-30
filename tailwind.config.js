@@ -24,11 +24,20 @@ module.exports = {
           '100%': {
             transform: 'translateY(0px)'
           }
+        },
+        loadingSpin: {
+          '0%': {
+            transform: 'rotate(0)'
+          },
+          '100%': {
+            transform: 'rotate(360)'
+          }
         }
       },
 
       animation: {
-        modalSlideIn: 'modalSlideIn 0.5s ease'
+        modalSlideIn: 'modalSlideIn 0.5s ease',
+        loadingSpin: 'loadingSpin 1s infinite linear'
       }
     },
   },

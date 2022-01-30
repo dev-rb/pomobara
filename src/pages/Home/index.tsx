@@ -5,12 +5,14 @@ import TaskGroup from '../../components/TaskGroup';
 import ReactModal from 'react-modal';
 import TaskModal, { TaskModalProps } from '../../components/TaskModal';
 import { TaskModalContext } from '../../App';
+import { useGetLevelQuery } from '../../redux/apis/tasksEndpoints';
 
 ReactModal.setAppElement('#root')
 
 const Home = () => {
 
     const { viewTaskModal, setViewTaskModal, setTaskModalProps, taskModalProps } = React.useContext(TaskModalContext!);
+
 
     const createNewTask = () => {
         setViewTaskModal!(true);
@@ -38,7 +40,7 @@ interface ModalProps {
 
 const Modal = React.memo(({ viewTaskModal, toggleModal, taskModalProps }: ModalProps) => {
     return (
-        <ReactModal isOpen={viewTaskModal} preventScroll shouldCloseOnOverlayClick onRequestClose={() => toggleModal(false)} shouldCloseOnEsc
+        <ReactModal isOpen={viewTaskModal} preventScroll closeTimeoutMS={100} shouldCloseOnOverlayClick onRequestClose={() => toggleModal(false)} shouldCloseOnEsc
             contentElement={(props, children) => <div {...props}>{children} </div>}>
             <TaskModal {...taskModalProps} />
         </ReactModal>

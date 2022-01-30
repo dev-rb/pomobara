@@ -1,43 +1,55 @@
 import * as React from 'react';
+import { useGetLevelQuery } from '../../redux/apis/tasksEndpoints';
 import styles from './level.module.css';
 
 const initial = 408.4070449667
 const need = 200;
 
 interface LevelProps {
-    currentLevel?: number,
-    xp?: number
+    currentLevel: number,
+    xp: number
 }
 
-const Level = ({ currentLevel, xp }: LevelProps) => {
+const Level = () => {
 
-    const [currentXp, setCurrentXp] = React.useState(initial);
+    const [currentXp, setCurrentXp] = React.useState(0);
     const [currentLvl, setCurrentLvl] = React.useState(1);
     // current / totalXp
+    const { data } = useGetLevelQuery();
+
+    // Go to level over time 
+    // React.useEffect(() => {
+    //     setTimeout(() => {
+    //         // setCurrentXp(408.4070449667 * (1 - 0.5));
+
+
+    //     }, 1000)
+
+
+
+    //     let localCount = currentLvl!;
+    //     let speed = 200;
+    //     let count = function () {
+    //         if (need - localCount > 20) {
+    //             speed -= 10;
+    //         }
+
+    //         if (localCount != need) {
+    //             setCurrentLvl((prev) => prev + 1);
+    //             localCount++;
+    //             setTimeout(count, speed)
+    //         }
+    //     }
+    //     setTimeout(count, speed)
+    // }, [])
 
     React.useEffect(() => {
-        setTimeout(() => {
-            setCurrentXp(408.4070449667 * (1 - 0.5));
-
-
-        }, 1000)
-
-        let localCount = currentLvl;
-        let speed = 200;
-        let count = function () {
-            if (need - localCount > 20) {
-                speed -= 10;
-            }
-
-            if (localCount != need) {
-                setCurrentLvl((prev) => prev + 1);
-                localCount++;
-                setTimeout(count, speed)
-            }
+        if (data) {
+            const { level, xp } = data;
+            setCurrentLvl(level);
+            setCurrentXp(408.4070449667 * (1 - xp / Math.pow(level + 1, 3)))
         }
-        setTimeout(count, speed)
-    }, [])
-
+    }, [data])
 
     return (
         <div className='relative max-w-xs w-full h-fit lg:col-start-1  before:w-2/5 before:h-2/5 before:absolute before:left-[30%] before:top-[2%] before:-z-[1] before:bg-level-bara before:bg-cover'>

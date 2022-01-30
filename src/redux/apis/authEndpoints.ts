@@ -33,7 +33,7 @@ const authApi = api.injectEndpoints({
                     // console.log(endpoint)
                     // console.log("Sign in called in thunk")
                     const response = await signInWithPopup(auth, provider).then((newUser) => newUser.user.getIdToken());
-
+                    await fetch('http://localhost:5000/signup', { method: 'GET', headers: { 'Authorization': response } })
                     return { data: response };
                 }
                 catch (err) {
@@ -48,6 +48,7 @@ const authApi = api.injectEndpoints({
                 try {
                     // console.log("Sign in called in thunk")
                     const response = await createUserWithEmailAndPassword(auth, email, password).then((newUser) => newUser.user.getIdToken());
+                    await fetch('http://localhost:5000/signup', { method: 'GET', headers: { 'Authorization': response } })
                     return { data: response };
                 }
                 catch (err) {
@@ -78,4 +79,5 @@ const authApi = api.injectEndpoints({
 export const {
     useSignInUserMutation,
     useSignInWithGoogleMutation,
+    useSignUpUserMutation
 } = authApi;

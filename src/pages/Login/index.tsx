@@ -14,10 +14,7 @@ const Login = () => {
 
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [submitting, setSubmitting] = React.useState(false);
 
-    const [emailError, setEmailError] = React.useState("");
-    const [passwordError, setPasswordError] = React.useState("");
     const [noUserError, setNoUserError] = React.useState("");
 
     const [login, data] = useSignInUserMutation();
@@ -25,20 +22,8 @@ const Login = () => {
 
     const dispatch = useDispatch();
 
-    // const resetValues = React.useCallback(() => {
-    //     setTimeout(() => {
-    //         // if (error === null) {
-    //         //     setEmail("");
-    //         //     setPassword("");
-    //         // }
-    //         setSubmitting(false);
-    //     }, 600)
-    // }, [error, emailError, passwordError, noUserError])
-
     const signInWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
-        // console.log("Submit login")
-        // setSubmitting(true);
         try {
             const res = await login({ email, password }).unwrap();
             dispatch(signIn(res))
@@ -47,8 +32,6 @@ const Login = () => {
             const error = err as FetchBaseQueryError | SerializedError
             console.log(err)
         }
-        // dispatch(signInUser({ email, password }));
-        // resetValues();
     }
 
     const signInWithGoogle = async () => {

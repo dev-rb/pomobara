@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import { GoogleAuthProvider } from 'firebase/auth';
 import capybara from '../../images/capybara-pomo.png';
 import { useDispatch } from 'react-redux';
-import { signInUser, signUpUser } from '../../redux/slices/authSlice';
+import { signIn, signInUser, signUpUser } from '../../redux/slices/authSlice';
+import { useSignUpUserMutation } from '../../redux/apis/authEndpoints';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 const Register = () => {
     const [name, setName] = React.useState("");
@@ -12,12 +15,20 @@ const Register = () => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
+    const [signUp] = useSignUpUserMutation();
+
     const dispatch = useDispatch();
 
-    const signUpWithEmail = (e: React.FormEvent) => {
+    const signUpWithEmail = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log("Called")
-        dispatch(signUpUser({ email, password }));
+        try {
+            const res = await signUp({ email, password }).unwrap();
+            dispatch(signIn(res));
+        } catch (err) {
+            const error = err as FetchBaseQueryError | SerializedError;
+
+        }
     }
 
     return (

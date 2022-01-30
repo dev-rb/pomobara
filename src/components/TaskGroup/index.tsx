@@ -1,8 +1,10 @@
-import { createSelector } from '@reduxjs/toolkit';
 import * as React from 'react';
+import styles from './taskgroup.module.css';
+import { createSelector } from '@reduxjs/toolkit';
 import { shallowEqual, useSelector } from 'react-redux';
-import { useGetTasksQuery } from '../../redux/apis/tasksEndpoints';
+import { useGetTaskQuery, useGetTasksQuery } from '../../redux/apis/tasksEndpoints';
 import { IRootState } from '../../redux/store';
+import LoadingSpinner from '../LoadingSpinner';
 import Task, { ITask, TaskStatus } from '../Task';
 
 interface TaskGroupProps {
@@ -18,28 +20,37 @@ const makeSelectTasks = () =>
 
 const TaskGroup = ({ groupTitle }: TaskGroupProps) => {
 
+    const [isMinimized, setIsMinimized] = React.useState(true);
+
     const selectTasks = React.useMemo(makeSelectTasks, []);
 
     // const tasks = useSelector((state: IRootState) => selectTasks(state, groupTitle), shallowEqual);
 
-    const { tasks = [], refetch } = useGetTasksQuery(undefined, {
-        selectFromResult: ({ data }) => ({
-            tasks: selectTasks(data, groupTitle)
+    // const { data } = useGetTaskQuery('KCKVyfSCOJZOZmCHbIGlx');
+
+    // React.useEffect(() => {
+    //     console.log(data)
+    // }, [data])
+
+    const { tasks = [], isFetching, isLoading } = useGetTasksQuery(undefined, {
+        selectFromResult: ({ data, isFetching, isLoading }) => ({
+            tasks: selectTasks(data, groupTitle),
+            isFetching,
+            isLoading
         })
     });
-
-    React.useEffect(() => {
-        console.log(tasks)
-    }, [tasks])
 
     return (
         <div className='w-full max-w-md h-fit flex flex-col gap-4 md:max-w-lg'>
             <div className='flex justify-between items-center'>
                 <h1 className='text-white m-0 text-2xl font-semibold'>{groupTitle}</h1>
-                <button className='bg-transparent outline-hidden border-none text-[#2881D9] font-normal'> View All </button>
+                <button className='bg-transparent outline-hidden border-none text-[#2881D9] font-normal' onClick={() => setIsMinimized(!isMinimized)}> {isMinimized ? 'View All' : 'Hide All'} </button>
             </div>
-            <div className='w-full h-full flex flex-col gap-8'>
-                {tasks && tasks.map((task) => <Task key={task.id} {...task} />)}
+            <div className={`${isMinimized ? styles.minimized : ''}  w-full h-full flex flex-col gap-8`}>
+                {isLoading ?
+                    <LoadingSpinner /> :
+                    tasks.map((task) => <Task key={task.id} id={task.id} />)
+                }
             </div>
         </div>
     );

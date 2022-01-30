@@ -46,6 +46,11 @@
   /* animation: testAnimation var(--start) linear var(--end) forwards; */
 }
 
+.ReactModal__Overlay--before-close .ReactModal__Content > div{
+  transform: translateY(100vh);
+  transition: transform 0.5s ease;
+}
+
 @keyframes testAnimation{
   0%{
     stroke-dashoffset: 0;

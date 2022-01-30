@@ -37,3 +37,13 @@
     flex-direction: column;
     gap: 2rem;
 }
+
+.minimized{
+    max-height: 22rem;
+    overflow: hidden;
+    transition: max-height 2s;
+}
+
+.maximized{
+    max-height: 100%;
+}

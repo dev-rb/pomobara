@@ -7,7 +7,9 @@ import { useDispatch } from 'react-redux';
 import { addTask, updateTask } from '../../redux/slices/taskSlice';
 import { nanoid } from '@reduxjs/toolkit';
 import { TaskModalContext } from '../../App';
-import { useNewTaskMutation } from '../../redux/apis/tasksEndpoints';
+import { useDeleteTaskMutation, useNewTaskMutation, useUpdateTaskMutation } from '../../redux/apis/tasksEndpoints';
+import { MdDelete } from 'react-icons/md';
+import LoadingSpinner from '../LoadingSpinner';
 
 const CustomDateInput = React.forwardRef(({ onClick, id, onChange, value }: React.HTMLProps<HTMLInputElement>, ref: React.Ref<HTMLInputElement>) => {
     return (
@@ -46,6 +48,8 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     const { setViewTaskModal } = React.useContext(TaskModalContext!);
 
     const [newTask, result] = useNewTaskMutation();
+    const [updateTask] = useUpdateTaskMutation();
+    const [deleteTask, { isLoading }] = useDeleteTaskMutation();
 
     const dispatch = useDispatch();
 
@@ -57,14 +61,31 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
 
     const updateTaskValues = () => {
         console.log(`Modal is updating: ${id}`);
-        dispatch(updateTask({ id: id!, text: taskText, dueDate: taskDate, dueTime: taskTime, status: taskStatus }));
+        const task = { id: id!, text: taskText, dueDate: taskDate, dueTime: taskTime, status: taskStatus };
+        updateTask(task)
         setViewTaskModal!(false);
     }
 
+    const deleteThisTask = () => {
+        deleteTask(id!).unwrap().finally(() => {
+            setTimeout(() => {
+                setViewTaskModal!(false);
+            }, 250)
+        });
+    }
+
     return (
-        <div className='max-w-md w-screen bg-[#1C1E1F] max-h-[42rem] h-screen flex flex-col px-4 py-4 pt-8 z-10 animate-modalSlideIn lg:px-8 lg:max-w-2xl'>
+        <div className='max-w-md w-screen bg-[#1C1E1F] max-h-[42rem] h-screen flex flex-col px-4 py-4 pt-8 z-10 animate-modalSlideIn relative transition-transform lg:px-8 lg:max-w-2xl'>
+            {isLoading &&
+                <div className='w-full h-full bg-black opacity-40 absolute top-0 left-0 flex items-center justify-center flex-col'>
+                    <h1 className='text-white text-2xl z-10'> Deleting </h1>
+                    <LoadingSpinner />
+                </div>
+
+            }
             <div className='w-full flex items-center justify-center'>
-                <h1 className='text-white text-2xl font-semibold'> {typeOfModal === 'create' ? 'Create a' : 'Update'} task </h1>
+                <h1 className='text-white text-2xl font-semibold mx-auto'> {typeOfModal === 'create' ? 'Create a' : 'Update'} task </h1>
+                {id && <button className='bg-red-600 rounded-md p-1' onClick={deleteThisTask}> <MdDelete size={30} color="white" /> </button>}
             </div>
             <div className='h-full w-full flex flex-col gap-8 mt-4 text-[#596367] text-base'>
                 <div className='flex flex-col'>
