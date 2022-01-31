@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Timer } from '../../util/timer';
 
 interface TimerSettings {
     focusTime: { length: number, occurences: number },
@@ -116,6 +117,12 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
     React.useEffect(() => {
         generateStartAngles();
         // generateStartTimings();
+        let timer = new Timer(undefined, undefined, () => { console.log("Test") });
+        timer.startTimer();
+
+        setTimeout(() => {
+            timer.stopTimer();
+        }, 5000)
     }, [])
 
     // React.useEffect(() => {

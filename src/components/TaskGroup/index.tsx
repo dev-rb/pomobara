@@ -1,9 +1,7 @@
 import * as React from 'react';
 import styles from './taskgroup.module.css';
 import { createSelector } from '@reduxjs/toolkit';
-import { shallowEqual, useSelector } from 'react-redux';
-import { useGetTaskQuery, useGetTasksQuery } from '../../redux/apis/tasksEndpoints';
-import { IRootState } from '../../redux/store';
+import { useGetTasksQuery } from '../../redux/apis/tasksEndpoints';
 import LoadingSpinner from '../LoadingSpinner';
 import Task, { ITask, TaskStatus } from '../Task';
 
@@ -34,7 +32,7 @@ const TaskGroup = ({ groupTitle }: TaskGroupProps) => {
 
     const { tasks = [], isFetching, isLoading } = useGetTasksQuery(undefined, {
         selectFromResult: ({ data, isFetching, isLoading }) => ({
-            tasks: data?.filter((task) => { return TaskStatus[task.status] === groupTitle }),
+            tasks: selectTasks(data, groupTitle),
             isFetching,
             isLoading
         }),
@@ -47,7 +45,7 @@ const TaskGroup = ({ groupTitle }: TaskGroupProps) => {
                 <button className='bg-transparent outline-hidden border-none text-[#2881D9] font-normal' onClick={() => setIsMinimized(!isMinimized)}> {isMinimized ? 'View All' : 'Hide All'} </button>
             </div>
             <div className={`${isMinimized ? styles.minimized : ''}  w-full h-full flex flex-col gap-8 items-center`}>
-                {isLoading || isFetching ?
+                {isLoading ?
                     <LoadingSpinner /> :
                     tasks.map((task) => <Task key={task.id} {...task} />)
                 }

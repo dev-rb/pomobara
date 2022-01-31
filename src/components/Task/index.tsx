@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { FiClock } from 'react-icons/fi';
 import { TaskModalContext } from '../../App';
-import { useGetTaskQuery } from '../../redux/apis/tasksEndpoints';
 import styles from './task.module.css';
 
 export enum TaskStatus {

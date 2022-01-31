@@ -12,19 +12,18 @@ export const tasksApi = api.injectEndpoints({
             providesTags: (result = [], error, arg) =>
                 result
                     ? [
-                        { type: 'Task', id: 'LIST' },
                         ...result.map(({ id }) => ({ type: 'Task' as const, id })),
+                        { type: 'Task', id: 'LIST' },
                     ]
-                    : [{ type: 'Task', id: 'LIST' }],
+                    : [{ type: 'Task', id: 'LIST' }]
         }),
-        getTask: build.query<ITask, string>({
+        getTaskForUser: build.query<ITask, string>({
             query: (id) => ({
                 url: `task/${id}`,
                 // mode: 'no-cors',
                 method: 'GET',
             }),
-            providesTags: (result, error, id) => [{ type: 'Task', id: 'LIST' }],
-
+            // providesTags: (result, error, arg) => [{ type: 'Task', id: arg }]
         }),
         newTask: build.mutation<void, ITask>({
             query: (task: ITask) => ({
@@ -56,19 +55,20 @@ export const tasksApi = api.injectEndpoints({
             invalidatesTags: [{ type: 'Task', id: 'LIST' }]
 
         }),
-        updateTask: build.mutation<string, ITask>({
+        updateTask: build.mutation<void, ITask>({
             query: (task) => ({
                 url: `tasks/update/${task.id}`,
                 method: 'PUT',
                 body: task,
                 headers: { 'Content-Type': 'application/json' }
             }),
-            async onQueryStarted({ id, ...task }, { dispatch, queryFulfilled }) {
+            async onQueryStarted(task, { dispatch, queryFulfilled }) {
                 console.log("Before updateQueryData")
-                const result = dispatch(tasksApi.util.updateQueryData('getTask', id, (draft) => {
+                const result = dispatch(tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
                     console.log("Update Query Called")
                     console.log(draft, task);
-                    Object.assign(draft, task);
+                    let found = draft.find((val) => val.id === task.id);
+                    Object.assign(found, task);
                 }))
                 // const resTwo = dispatch(tasksApi.util.patchQueryData('getTask', task.id, result.patches));
                 console.log("After updateQueryData")
@@ -81,7 +81,7 @@ export const tasksApi = api.injectEndpoints({
                     result.undo();
                 }
             },
-            invalidatesTags: (_, __, { id }) => [{ type: 'Task', id: id }, 'Level']
+            invalidatesTags: (result, __, { id, status }) => [{ type: 'Task', id: id }, status === 2 ? 'Level' : 'Task']
         }),
         deleteTask: build.mutation<void, string>({
             query: (taskId) => ({
@@ -103,7 +103,7 @@ export const tasksApi = api.injectEndpoints({
 
 export const {
     useGetTasksQuery,
-    useGetTaskQuery,
+    // useGetTaskQuery,
     useNewTaskMutation,
     useUpdateTaskMutation,
     useDeleteTaskMutation,

@@ -50,7 +50,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      {/* <Route path="/register" element={<Register />} /> */}
       <Route path="/" element={!user ? <Navigate to={'/login'} /> : <App />} >
         <Route index element={<Home />} />
         <Route path="/friends" element={<Friends />} />

@@ -75,7 +75,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     return (
         <div className='max-w-md w-screen bg-[#1C1E1F] max-h-[42rem] h-screen flex flex-col px-4 py-4 pt-8 z-10 animate-modalSlideIn relative transition-transform lg:px-8 lg:max-w-2xl'>
             {isLoading &&
-                <div className='w-full h-full bg-black opacity-40 absolute top-0 left-0 flex items-center justify-center flex-col'>
+                <div className='w-full h-full bg-black bg-opacity-40 absolute top-0 left-0 flex items-center justify-center flex-col'>
                     <h1 className='text-white text-2xl z-10'> Deleting </h1>
                     <LoadingSpinner />
                 </div>
