@@ -1,6 +1,6 @@
 export class Timer {
 
-    start = Date.now()
+    start = 0
     elapsedTime = 0
     expected = 0
     interval = 1000
@@ -17,12 +17,19 @@ export class Timer {
     }
 
     startTimer() {
+        this.start = Date.now();
         this.expected = Date.now() + this.interval;
+        // console.log("Elapsed", this.duration, this.start)
         this.timerStore = setTimeout(this.timerStep.bind(this), this.interval);
     }
 
     stopTimer() {
         clearTimeout(this.timerStore);
+    }
+
+    getTime() {
+        // console.log(new Date(this.elapsedTime).getMilliseconds())
+        return this.elapsedTime;
     }
 
     timerStep() {
@@ -35,7 +42,9 @@ export class Timer {
         if (this.callback) {
             this.callback();
         }
-        // console.log("Test")
+        this.duration -= this.interval;
+        // console.log(new Date(this.elapsedTime).getSeconds())
+        // console.log(this.elapsedTime)
 
         this.expected += this.interval;
         this.timerStore = setTimeout(this.timerStep.bind(this), Math.max(0, this.interval - drift));

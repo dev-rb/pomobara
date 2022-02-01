@@ -70,6 +70,7 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
 
     const [startAngles, setStartAngles] = React.useState<number[]>([]);
     const [startTimings, setStartTimings] = React.useState<number[]>([]);
+    const [time, setTime] = React.useState({ min: 0, seconds: 0 });
 
     function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
         var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -116,13 +117,8 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
 
     React.useEffect(() => {
         generateStartAngles();
-        // generateStartTimings();
-        let timer = new Timer(undefined, undefined, () => { console.log("Test") });
-        timer.startTimer();
+        generateStartTimings();
 
-        setTimeout(() => {
-            timer.stopTimer();
-        }, 5000)
     }, [])
 
     // React.useEffect(() => {
@@ -142,6 +138,10 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
         return color;
     }
 
+    const updateTime = (mins: number, seconds: number) => {
+        setTime({ min: mins, seconds: seconds });
+    }
+
     return (
         <svg viewBox='0 0 200 200' xmlns="http://www.w3.org/2000/svg" className='TestAnim'>
             <defs>
@@ -156,7 +156,7 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
             </defs>
             <circle cx="100" cy="100" r="58" fill='#151718' stroke="#242627" strokeWidth={1} />
             <text x="50%" y="50%" textAnchor='middle' fill='white'>
-                <tspan dominantBaseline='middle' fontSize={'2rem'} fontWeight={'400'} fontFamily='Open Sans'>25:00 </tspan>
+                <tspan dominantBaseline='middle' fontSize={'2rem'} fontWeight={'400'} fontFamily='Open Sans'>{time.min < 10 ? "0" + time.min : time.min}:{time.seconds < 10 ? "0" + time.seconds : time.seconds} </tspan>
             </text>
             {startAngles.map((val, index) => {
                 const style = {
@@ -164,11 +164,15 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
                     '--end': `${settings[order[index > 7 ? 0 : index] as keyof TimerSettings].length * 60}s`
                 } as React.CSSProperties;
                 return (
-                    <path key={val}
+                    <TimerPath
+                        key={val}
                         style={style}
-                        fill='none' strokeLinecap='round' strokeLinejoin='round'
-                        strokeDasharray={`${(15 - 0) * 408.4070449667 / 100} 408.4070449667`} stroke={getColorForTime(order[index])}
-                        strokeWidth={1} d={describeArc(100, 100, 65, val, startAngles[index + 1])} filter="url(#glow)" />
+                        strokeColor={getColorForTime(order[index])}
+                        arc={describeArc(100, 100, 65, val, startAngles[index + 1])}
+                        delay={startTimings[index] * 60}
+                        duration={settings[order[index > 7 ? 0 : index] as keyof TimerSettings].length}
+                        updateTime={updateTime}
+                    />
                 );
             })}
 
@@ -179,6 +183,59 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
             {/* Long Break Time */}
             {/* <circle className='relative stroke-long-break-glow' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={305} strokeDasharray={408.4070449667} /> */}
         </svg>
+    );
+}
+
+interface TimerPathProps {
+    style: React.CSSProperties,
+    strokeColor: string,
+    arc: string,
+    delay: number,
+    duration: number,
+    updateTime: (mins: number, seconds: number) => void
+}
+
+const TimerPath = ({ style, strokeColor, arc, delay, duration, updateTime }: TimerPathProps) => {
+
+    const [currentAmount, setCurrentAmount] = React.useState(1);
+
+    const updatePath = () => {
+        let date = (new Date(timer.duration));
+        // console.log("Raw Duration:", timer.duration)
+        if (date.getMinutes() === 0) {
+            console.log("Finished Timer");
+            timer.stopTimer();
+            return;
+        }
+        updateTime(date.getUTCMinutes(), date.getUTCSeconds());
+        // console.log("Time", date.getUTCMinutes(), date.getUTCSeconds(), date.getMilliseconds())
+        setCurrentAmount((prev) => prev + ((1 / 15)));
+    }
+    let timer = new Timer(1 * 60000, undefined, updatePath);
+
+    React.useEffect(() => {
+        // console.log(new Date(duration * 1000).getTime() / 1000)
+        setTimeout(() => {
+            timer.startTimer();
+            console.log(`Delay: ${delay}, Fin`)
+        }, delay * 1000)
+
+        return () => {
+            timer.stopTimer();
+        }
+    }, [])
+
+    React.useEffect(() => {
+
+        // console.log(currentAmount, timer.elapsedTime)
+    }, [currentAmount])
+
+    return (
+        <path
+            style={style}
+            fill='none' strokeLinecap='round' strokeLinejoin='round'
+            strokeDasharray={`${(15 - currentAmount) * 408.4070449667 / 100} 408.4070449667`} stroke={strokeColor}
+            strokeWidth={1} d={arc} filter="url(#glow)" />
     );
 }
 
