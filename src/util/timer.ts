@@ -1,52 +1,55 @@
-export class Timer {
+import { useRef, useState } from "react"
 
-    start = 0
-    elapsedTime = 0
-    expected = 0
-    interval = 1000
+export function useTimer(duration: number = 0, interval: number = 1000, callback?: Function, condition?: boolean) {
+    const currentTime = useRef(duration);
+    const timerStore = useRef<number | null>(null);
 
-    timerStore = 0
-    callback: Function | null = null
+    let expected = 0;
 
-    duration = 0
-
-    constructor(duration?: number, interval?: number, callback?: Function) {
-        this.duration = duration || 0
-        this.interval = interval || 1000
-        this.callback = callback || null
+    const startTimer = () => {
+        expected = Date.now() + interval;
+        // console.log("Elapsed", duration, start)
+        timerStore.current = setTimeout(timerStep, 0);
     }
 
-    startTimer() {
-        this.start = Date.now();
-        this.expected = Date.now() + this.interval;
-        // console.log("Elapsed", this.duration, this.start)
-        this.timerStore = setTimeout(this.timerStep.bind(this), this.interval);
+    const stopTimer = () => {
+        console.log("Timer stopped")
+        if (timerStore.current) {
+            clearTimeout(timerStore.current);
+            timerStore.current = null;
+        }
     }
 
-    stopTimer() {
-        clearTimeout(this.timerStore);
+    const pauseTimer = () => {
+        stopTimer();
     }
 
-    getTime() {
-        // console.log(new Date(this.elapsedTime).getMilliseconds())
-        return this.elapsedTime;
+    const resumeTimer = () => {
+        expected = Date.now() + interval;
+        timerStore.current = setTimeout(timerStep, interval);
     }
 
-    timerStep() {
-        let drift = Date.now() - this.expected;
-        if (drift > this.interval) {
-            console.log("Return")
-            return;
+    const timerStep = () => {
+        if (currentTime.current > -1) {
+            let drift = Date.now() - expected;
+            if (drift > interval) {
+                console.log("Return")
+                return;
+            }
+
+            if (callback) {
+                callback();
+            }
+            currentTime.current -= interval;
+            // console.log(new Date(elapsedTime).getSeconds())
+            // console.log(elapsedTime)
+
+            expected += interval;
+            timerStore.current = setTimeout(timerStep, Math.max(0, interval - drift));
         }
 
-        if (this.callback) {
-            this.callback();
-        }
-        this.duration -= this.interval;
-        // console.log(new Date(this.elapsedTime).getSeconds())
-        // console.log(this.elapsedTime)
-
-        this.expected += this.interval;
-        this.timerStore = setTimeout(this.timerStep.bind(this), Math.max(0, this.interval - drift));
     }
+
+    return { startTimer, stopTimer, currentTime, pauseTimer, resumeTimer }
+
 }

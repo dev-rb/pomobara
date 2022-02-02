@@ -32,12 +32,21 @@ module.exports = {
           '100%': {
             transform: 'rotate(360)'
           }
+        },
+        profileSlideIn: {
+          '0%': {
+            transform: 'translateX(-100%)'
+          },
+          '100%': {
+            transform: 'translateX(-2rem)'
+          }
         }
       },
 
       animation: {
         modalSlideIn: 'modalSlideIn 0.5s ease',
-        loadingSpin: 'loadingSpin 1s infinite linear'
+        loadingSpin: 'loadingSpin 1s infinite linear',
+        profileSlideIn: 'profileSlideIn 0.4s forwards linear',
       }
     },
   },

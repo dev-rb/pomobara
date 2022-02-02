@@ -35,6 +35,7 @@ function App() {
     <TaskModalContextProvider>
       <div className="App">
         <Header />
+
         {/* <ReloadPrompt /> */}
         <Outlet />
         {/* <Navbar /> */}

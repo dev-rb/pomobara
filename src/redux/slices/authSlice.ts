@@ -104,7 +104,9 @@ const authSlice = createSlice({
             .addCase(signUpUser.rejected, (state, { payload }) => {
                 state.error = payload as string;
             })
-
+            .addCase(signOut, (state) => {
+                state.user = null;
+            })
     }
 });
 

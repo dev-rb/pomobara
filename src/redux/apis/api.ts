@@ -1,3 +1,4 @@
+import { PERSIST_REHYDRATE } from "@redux-offline/redux-offline/lib/constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IRootState } from "../store";
 
@@ -17,6 +18,11 @@ export const api = createApi({
             return headers;
         }
     }),
+    extractRehydrationInfo: (action, { reducerPath }) => {
+        if (action.type === PERSIST_REHYDRATE) {
+            return action.payload[reducerPath];
+        }
+    },
     tagTypes: ['Task', 'Level'],
     endpoints: () => ({})
 })

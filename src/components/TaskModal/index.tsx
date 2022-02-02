@@ -45,6 +45,8 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     const [taskTime, setTaskTime] = React.useState<string>(time ? time : "");
     const [taskStatus, setTaskStatus] = React.useState(status);
 
+    const [showConfirmDelete, setShowConfirmDelete] = React.useState(false);
+
     const { setViewTaskModal } = React.useContext(TaskModalContext!);
 
     const [newTask, result] = useNewTaskMutation();
@@ -65,6 +67,7 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
     }
 
     const deleteThisTask = () => {
+        setShowConfirmDelete(false);
         deleteTask(id!).unwrap().finally(() => {
             setTimeout(() => {
                 setViewTaskModal!(false);
@@ -79,11 +82,25 @@ const TaskModal = ({ id, text = "", date, time, status = TaskStatus['Not Started
                     <h1 className='text-white text-2xl z-10'> Deleting </h1>
                     <LoadingSpinner />
                 </div>
-
             }
+
+            {showConfirmDelete &&
+                <div className='w-full h-full bg-black bg-opacity-50 absolute top-0 left-0 flex items-center justify-center flex-col'>
+                    <div className='w-10/12 h-10/12 bg-[#151718] z-10 flex items-center justify-center flex-col p-8 gap-4 text-center'>
+                        <h1 className='text-white text-2xl'> Delete Task? </h1>
+                        <p className='text-white text-md'> Are you sure you want to delete this task? </p>
+                        <p className='text-white text-md'> You can't undo this action. </p>
+                        <div className='flex justify-between w-full gap-4'>
+                            <button className='flex-1 rounded-md p-1 border-2 border-[#1D2021] text-white' onClick={() => setShowConfirmDelete(false)}> Cancel </button>
+                            <button className='flex flex-1 items-center justify-center bg-red-600 rounded-md p-1 text-white font-semibold gap-2' onClick={deleteThisTask} ><MdDelete size={30} color="white" /> Delete </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
             <div className='w-full flex items-center justify-center'>
                 <h1 className='text-white text-2xl font-semibold mx-auto'> {typeOfModal === 'create' ? 'Create a' : 'Update'} task </h1>
-                {id && <button className='bg-red-600 rounded-md p-1' onClick={deleteThisTask}> <MdDelete size={30} color="white" /> </button>}
+                {id && <button className='bg-red-600 rounded-md p-1' onClick={() => setShowConfirmDelete(true)}> <MdDelete size={30} color="white" /> </button>}
             </div>
             <div className='h-full w-full flex flex-col gap-8 mt-4 text-[#596367] text-base'>
                 <div className='flex flex-col'>

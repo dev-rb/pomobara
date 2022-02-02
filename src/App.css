@@ -6,6 +6,7 @@
   grid-template-columns: 1fr;
   grid-template-rows: min-content;
   justify-items: center;
+  position: relative;
 }
 
 .ReactModal__Overlay--after-open{

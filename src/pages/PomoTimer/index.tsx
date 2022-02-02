@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Timer } from '../../util/timer';
+import { describeArc } from '../../util/arcGen';
+import { useTimer } from '../../util/timer';
 
 interface TimerSettings {
     focusTime: { length: number, occurences: number },
@@ -10,14 +11,16 @@ interface TimerSettings {
 const defaultSettings: TimerSettings = { focusTime: { length: 25, occurences: 4, }, shortBreakTime: { length: 5, occurences: 3 }, longBreakTime: { length: 15, occurences: 1 } };
 
 const timeColors: { [key: string]: string } = {
-    'focusTime': '#D92828',
-    'shortBreakTime': '#FFF',
-    'longBreakTime': '#2881D9'
+    'focusTime': '#28D981',
+    'shortBreakTime': '#2881D9',
+    'longBreakTime': '#FFF'
 }
 
 const PomoTimer = () => {
 
     const [timerSettings, setTimerSettings] = React.useState<TimerSettings>(defaultSettings);
+
+    const [timerStatus, setTimerStatus] = React.useState(false);
 
     const getTotalTime = React.useMemo(() => {
         let totalTime = 0;
@@ -54,8 +57,13 @@ const PomoTimer = () => {
     }
 
     return (
-        <div className='w-full h-full max-w-2xl'>
-            <TimerDisplay order={createOrderOfTimes()} settings={timerSettings} totalTime={getTotalTime} />
+        <div className='w-full h-full max-w-2xl pt-8'>
+            <TimerDisplay order={createOrderOfTimes()} settings={timerSettings} totalTime={getTotalTime} timerStatus={timerStatus} />
+            <div className='flex w-full flex-row justify-between gap-4'>
+                <button className='flex-1 rounded-md border-2 border-[#1D2021] text-white text-2xl py-2 font-semibold' onClick={() => setTimerStatus(false)}>Stop</button>
+                <button className='flex-1 rounded-md bg-long-break-glow text-white text-2xl py-2 font-semibold' onClick={() => setTimerStatus(!timerStatus)}> {timerStatus ? "Pause" : "Start"} </button>
+                {/* <button className='flex-1 rounded-md bg-long-break-glow text-white text-2xl py-2 font-semibold' onClick={() => setTimerStatus(true)}>Resume</button> */}
+            </div>
         </div>
     );
 }
@@ -63,38 +71,16 @@ const PomoTimer = () => {
 interface DisplayProps {
     order: string[],
     settings: TimerSettings,
-    totalTime: number
+    totalTime: number,
+    timerStatus: boolean
 }
 
-const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
+const TimerDisplay = ({ order, settings, totalTime, timerStatus }: DisplayProps) => {
 
     const [startAngles, setStartAngles] = React.useState<number[]>([]);
     const [startTimings, setStartTimings] = React.useState<number[]>([]);
     const [time, setTime] = React.useState({ min: 0, seconds: 0 });
-
-    function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
-        var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-
-        return {
-            x: centerX + (radius * Math.cos(angleInRadians)),
-            y: centerY + (radius * Math.sin(angleInRadians))
-        };
-    }
-
-    function describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
-
-        var start = polarToCartesian(x, y, radius, endAngle);
-        var end = polarToCartesian(x, y, radius, startAngle);
-
-        var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-        var d = [
-            "M", start.x, start.y,
-            "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
-        ].join(" ");
-
-        return d;
-    }
+    const [activeSession, setActiveSession] = React.useState(0)
 
     const generateStartAngles = () => {
         let angles = [0];
@@ -102,7 +88,6 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
         order.forEach((val) => {
             angles.push((((settings[val as keyof TimerSettings].length) / totalTime) * 100) + angles[angles.length - 1] + (65 / (totalOccurences / 4)))
         })
-        // console.log(65 / (totalOccurences / 4))
         setStartAngles(angles);
     }
 
@@ -117,125 +102,134 @@ const TimerDisplay = ({ order, settings, totalTime }: DisplayProps) => {
 
     React.useEffect(() => {
         generateStartAngles();
-        generateStartTimings();
+        // generateStartTimings();
 
     }, [])
 
-    // React.useEffect(() => {
-    //     console.log(startAngles)
-    // }, [startAngles])
-
     const getColorForTime = (time: string) => {
         return timeColors[time]
-    }
-
-    function makeRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
     }
 
     const updateTime = (mins: number, seconds: number) => {
         setTime({ min: mins, seconds: seconds });
     }
 
-    return (
-        <svg viewBox='0 0 200 200' xmlns="http://www.w3.org/2000/svg" className='TestAnim'>
-            <defs>
-                <filter id='glow' x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur className='blur' result='coloredBlur' stdDeviation={2} />
-                    <feMerge>
-                        <feMergeNode in='coloredBlur' />
-                        <feMergeNode in='coloredBlur' />
-                        <feMergeNode in='SourceGraphic' />
-                    </feMerge>
-                </filter>
-            </defs>
-            <circle cx="100" cy="100" r="58" fill='#151718' stroke="#242627" strokeWidth={1} />
-            <text x="50%" y="50%" textAnchor='middle' fill='white'>
-                <tspan dominantBaseline='middle' fontSize={'2rem'} fontWeight={'400'} fontFamily='Open Sans'>{time.min < 10 ? "0" + time.min : time.min}:{time.seconds < 10 ? "0" + time.seconds : time.seconds} </tspan>
-            </text>
-            {startAngles.map((val, index) => {
-                const style = {
-                    '--start': `${startTimings[index] * 60}s`,
-                    '--end': `${settings[order[index > 7 ? 0 : index] as keyof TimerSettings].length * 60}s`
-                } as React.CSSProperties;
-                return (
-                    <TimerPath
-                        key={val}
-                        style={style}
-                        strokeColor={getColorForTime(order[index])}
-                        arc={describeArc(100, 100, 65, val, startAngles[index + 1])}
-                        delay={startTimings[index] * 60}
-                        duration={settings[order[index > 7 ? 0 : index] as keyof TimerSettings].length}
-                        updateTime={updateTime}
-                    />
-                );
-            })}
+    const updateActive = (newActive: number) => {
+        setActiveSession(newActive);
+    }
 
-            {/* Focus Time */}
-            {/* <circle className='relative stroke-focus-glow' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={255} strokeDasharray={408.4070449667} /> */}
-            {/* Short Break Time */}
-            {/* <circle className='relative stroke-short-break-glow' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={455} strokeDasharray={408.4070449667} /> */}
-            {/* Long Break Time */}
-            {/* <circle className='relative stroke-long-break-glow' cx="100" cy="100" r="65" transform='rotate(-90 100 100)' style={{ transition: 'stroke-dashoffset 1.5s ease' }} filter="url(#glow)" fill='transparent' strokeWidth={2} strokeDashoffset={305} strokeDasharray={408.4070449667} /> */}
-        </svg>
+    const getTitle = (time: string) => {
+        if (time === 'focusTime') {
+            return "Focus";
+        } else if (time === 'shortBreakTime') {
+            return "Short Break";
+        } else if (time === 'longBreakTime') {
+            return "Long Break";
+        }
+    }
+
+    return (
+        <div>
+            <h1 className='text-white text-2xl text-center mb-[-2rem] md:mb-[-4rem] md:text-4xl'> {getTitle(order[activeSession])} </h1>
+            <svg viewBox='0 0 200 200' xmlns="http://www.w3.org/2000/svg" className='TestAnim'>
+                <defs>
+                    <filter id='glow' x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur className='blur' result='coloredBlur' stdDeviation={2} />
+                        <feMerge>
+                            <feMergeNode in='coloredBlur' />
+                            <feMergeNode in='coloredBlur' />
+                            <feMergeNode in='SourceGraphic' />
+                        </feMerge>
+                    </filter>
+                </defs>
+                {/* <circle cx="100" cy="100" r="65" fill='#151718' stroke="#242627" strokeWidth={1} /> */}
+
+                <text x="50%" y="50%" textAnchor='middle' fill='white'>
+                    {/* <tspan fontSize={'1rem'} fontWeight={'400'} fontFamily='Open Sans'> {activeSession} </tspan> */}
+                    <tspan dominantBaseline='middle' fontSize={'2rem'} fontWeight={'400'} fontFamily='Open Sans'>{time.min < 10 ? "0" + time.min : time.min}:{time.seconds < 10 ? "0" + time.seconds : time.seconds} </tspan>
+                </text>
+                {startAngles.map((val, index) => {
+                    return (
+                        <TimerPath
+                            key={val}
+                            index={index}
+                            strokeColor={getColorForTime(order[index])}
+                            arc={describeArc(100, 100, 65, val, startAngles[index + 1])}
+                            // delay={startTimings[index] * 60}
+                            duration={settings[order[index > 7 ? 0 : index] as keyof TimerSettings].length}
+                            updateTime={updateTime}
+                            updateActive={updateActive}
+                            name={order[index]}
+                            timerStatus={timerStatus}
+                            active={activeSession}
+                            canPlay={((activeSession) === index)}
+                        />
+                    );
+                })}
+            </svg>
+        </div>
     );
 }
 
 interface TimerPathProps {
-    style: React.CSSProperties,
+    index: number
     strokeColor: string,
     arc: string,
-    delay: number,
     duration: number,
     updateTime: (mins: number, seconds: number) => void
+    updateActive: (newActive: number) => void,
+    name: string,
+    timerStatus: boolean,
+    active: number,
+    canPlay: boolean
 }
 
-const TimerPath = ({ style, strokeColor, arc, delay, duration, updateTime }: TimerPathProps) => {
+const TimerPath = ({ index, strokeColor, arc, duration, updateTime, updateActive, name, timerStatus, active, canPlay }: TimerPathProps) => {
 
     const [currentAmount, setCurrentAmount] = React.useState(1);
 
     const updatePath = () => {
-        let date = (new Date(timer.duration));
-        // console.log("Raw Duration:", timer.duration)
-        if (date.getMinutes() === 0) {
-            console.log("Finished Timer");
-            timer.stopTimer();
+        let date = (new Date(currentTime.current));
+        updateTime(date.getUTCMinutes(), date.getUTCSeconds());
+        if (date.getMinutes() === 0 && date.getSeconds() === 0) {
+            console.log("Finished Timer", duration);
+            updateActive(index + 1);
+            stopTimer();
             return;
         }
-        updateTime(date.getUTCMinutes(), date.getUTCSeconds());
         // console.log("Time", date.getUTCMinutes(), date.getUTCSeconds(), date.getMilliseconds())
-        setCurrentAmount((prev) => prev + ((1 / 15)));
+        setCurrentAmount((prev) => prev + ((13.9 / (duration * 60))));
     }
-    let timer = new Timer(1 * 60000, undefined, updatePath);
+    const { startTimer, stopTimer, currentTime, resumeTimer } = useTimer(duration * 60000, undefined, updatePath);
 
     React.useEffect(() => {
-        // console.log(new Date(duration * 1000).getTime() / 1000)
-        setTimeout(() => {
-            timer.startTimer();
-            console.log(`Delay: ${delay}, Fin`)
-        }, delay * 1000)
+        if (canPlay && timerStatus) {
+            let date = (new Date(currentTime.current));
+            updateTime(date.getUTCMinutes(), date.getUTCSeconds());
+            startTimer();
+        } else if (!timerStatus && active === index) {
+            stopTimer();
+        }
 
         return () => {
-            timer.stopTimer();
+            stopTimer();
         }
-    }, [])
 
-    React.useEffect(() => {
+    }, [timerStatus, canPlay])
 
-        // console.log(currentAmount, timer.elapsedTime)
-    }, [currentAmount])
 
     return (
-        <path
-            style={style}
-            fill='none' strokeLinecap='round' strokeLinejoin='round'
-            strokeDasharray={`${(15 - currentAmount) * 408.4070449667 / 100} 408.4070449667`} stroke={strokeColor}
-            strokeWidth={1} d={arc} filter="url(#glow)" />
+        <g>
+            <path
+                fill='none' strokeLinecap='round' strokeLinejoin='round'
+                strokeDasharray={`${15 * 408.4070449667 / 100} 408.4070449667`} stroke={strokeColor} strokeOpacity={0.3}
+                strokeWidth={1} d={arc} />
+            <path
+                className='transition-all'
+                fill='none' strokeLinecap='round' strokeLinejoin='round'
+                strokeDasharray={`${(15 - currentAmount) * 408.4070449667 / 100} 408.4070449667`} stroke={Math.round(15 - currentAmount) === 0 ? undefined : strokeColor}
+                strokeWidth={1} d={arc} filter="url(#glow)" />
+        </g>
     );
 }
 
