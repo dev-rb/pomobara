@@ -2,7 +2,7 @@ import { PERSIST_REHYDRATE } from "@redux-offline/redux-offline/lib/constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IRootState } from "../store";
 
-const BASE_URL = 'http://localhost:5000/';
+const BASE_URL = 'https://pomobara-backend.herokuapp.com/';
 export const api = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: BASE_URL,
